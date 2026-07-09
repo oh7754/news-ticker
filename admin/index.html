@@ -4,70 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>News Ticker — Admin</title>
+<link rel="stylesheet" id="tickerCssLink" href="../NEWS/ticker.css">
+<script>
+  // 로컬 file:// 링크는 브라우저가 강하게 캐싱해서 ticker.css를 고쳐도
+  // 새로고침만으론 예전 버전이 계속 보이는 경우가 많다. 매 로드마다 타임스탬프
+  // 쿼리를 붙여서 항상 새로 받아오게 한다.
+  document.getElementById('tickerCssLink').href = '../NEWS/ticker.css?t=' + Date.now();
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0b0b0f;--bg2:#111118;--fg:rgba(255,255,255,0.92);--muted:rgba(255,255,255,0.5);--line:rgba(255,255,255,0.08);--line2:rgba(255,255,255,0.13)}
 body{background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,sans-serif;font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
-/* ══ 하단 플로팅 티커 (실제 확장프로그램 ticker.css와 동일한 클래스/변수 구조) ══
-   여기서 튜닝한 --ticker-* 값은 나중에 NEWS/ticker.css의 :root로 그대로 옮길 수 있음 */
-:root{
-  --ticker-height:48px;
-  --ticker-bg-alpha:0.9;
-  --ticker-blur:12px;
-  --ticker-radius:16px;
-  --ticker-bottom:16px;
-  --ticker-side:16px;
-  --ticker-max-width:900px;
-  --ticker-speed:60;
-  --ticker-font-size:16px;
-  --ticker-font-weight-source:600;
-  --ticker-font-weight-title:500;
-  --ticker-gap:8px;
-  --ticker-item-gap:48px;
-  --ticker-cat-font-size:13px;
-  --ticker-cat-bg-alpha:0.18;
-}
-
-.ticker-dot-live{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-
-.ticker-float{
-  position:fixed;left:50%;bottom:var(--ticker-bottom);transform:translateX(-50%);
-  width:calc(100% - var(--ticker-side) * 2);max-width:var(--ticker-max-width);height:var(--ticker-height);
-  background:rgba(17,17,17,var(--ticker-bg-alpha));
-  backdrop-filter:blur(var(--ticker-blur));-webkit-backdrop-filter:blur(var(--ticker-blur));
-  border-radius:var(--ticker-radius);border:1px solid rgba(255,255,255,0.08);
-  box-shadow:0 8px 32px rgba(0,0,0,0.45);
-  display:flex;align-items:center;overflow:hidden;z-index:500;font-family:inherit;
-}
-.ticker-float.full-width{max-width:none}
-.ticker-float-label{flex-shrink:0;padding:0 14px;font-size:11px;font-weight:700;letter-spacing:.05em;color:rgba(255,255,255,0.55);white-space:nowrap;display:flex;align-items:center;gap:6px}
-.ticker-float-track{flex:1;overflow:hidden;height:100%;position:relative;mask-image:linear-gradient(to right,transparent,black 16px,black calc(100% - 16px),transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 16px,black calc(100% - 16px),transparent)}
-.ticker-float-inner{display:flex;align-items:center;height:100%;gap:var(--ticker-item-gap);white-space:nowrap;will-change:transform}
-.ticker-float-controls{flex-shrink:0;display:flex;align-items:center;padding:0 10px}
-.ticker-float-controls button{background:none;border:none;color:rgba(255,255,255,0.55);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:4px;transition:.15s}
-.ticker-float-controls button:hover{color:#fff;background:rgba(255,255,255,0.1)}
-
-/* ── 티커 아이템 (실제 확장프로그램 content.js의 renderTickerItem과 동일 구조/클래스) ── */
-.ticker-item{display:inline-flex;align-items:center;gap:var(--ticker-gap);flex-shrink:0;color:inherit;text-decoration:none;cursor:pointer}
-.ticker-item:hover .ticker-title{color:#f9c74f}
-.ticker-source{display:flex;align-items:center;gap:2px}
-.ticker-source-name{font-size:var(--ticker-font-size);font-weight:var(--ticker-font-weight-source);color:#fff;white-space:nowrap}
-.ticker-cluster{font-size:var(--ticker-font-size);font-weight:var(--ticker-font-weight-source);color:#fff;opacity:.5;white-space:nowrap}
-.ticker-cat{padding:4px 8px;border-radius:99px;font-size:var(--ticker-cat-font-size);font-weight:600;line-height:1;white-space:nowrap;background:rgba(var(--cat-r),var(--cat-g),var(--cat-b),var(--ticker-cat-bg-alpha));color:rgb(var(--cat-r),var(--cat-g),var(--cat-b))}
-.ticker-article{display:flex;align-items:center;gap:6px}
-.ticker-title{font-size:var(--ticker-font-size);font-weight:var(--ticker-font-weight-title);color:#fff;white-space:nowrap;transition:color .15s}
-.ticker-dot{flex-shrink:0;width:6px;height:6px;border-radius:99px;background:#f00;box-shadow:0 0 4px 2px rgba(255,0,0,.6)}
-
-.cat-politics{--cat-r:239;--cat-g:68;--cat-b:68}
-.cat-economy{--cat-r:16;--cat-g:185;--cat-b:129}
-.cat-society{--cat-r:59;--cat-g:130;--cat-b:246}
-.cat-world{--cat-r:168;--cat-g:85;--cat-b:247}
-.cat-culture{--cat-r:236;--cat-g:72;--cat-b:153}
-.cat-entertainment{--cat-r:236;--cat-g:72;--cat-b:153}
-.cat-sports{--cat-r:245;--cat-g:158;--cat-b:11}
-.cat-tech{--cat-r:6;--cat-g:182;--cat-b:212}
+/* 하단 플로팅 티커의 스타일(:root 변수, 컨테이너, .ticker-item 계열, .cat-*)은
+   전부 ../NEWS/ticker.css에서 옴 — 실제 확장프로그램과 100% 동일한 파일을 그대로 링크.
+   여기서 중복 정의하지 않는다. 티커를 조정하려면 NEWS/ticker.css를 직접 수정할 것. */
 
 /* LAYOUT */
 .layout{display:grid;grid-template-columns:230px 1fr;flex:1;overflow:hidden}
@@ -132,7 +83,7 @@ input[type=range]{width:100%;accent-color:#fff;height:3px}
 .sort-btn:hover:not(.active){background:rgba(255,255,255,0.04)}
 .result-cnt{font-size:11px;color:var(--muted);margin-left:auto}
 
-.article-list{flex:1;overflow-y:auto;padding:6px}
+.article-list{flex:1;overflow-y:auto;padding:6px;padding-bottom:90px}
 .article-item{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:start;padding:9px 10px;border-radius:7px;border:1px solid transparent;cursor:pointer;transition:.15s;margin-bottom:3px}
 .article-item:hover{background:rgba(255,255,255,0.03);border-color:var(--line)}
 .rank{font-size:11px;color:var(--muted);text-align:right;padding-top:2px}
@@ -206,61 +157,6 @@ input[type=range]{width:100%;accent-color:#fff;height:3px}
     <button class="save-btn" onclick="saveConfig()">💾 설정 저장 (서버에 반영)</button>
     <div class="save-status" id="saveStatus"></div>
   </div>
-  <div>
-    <div class="s-title">티커 (하단 플로팅)</div>
-
-    <div class="slider-row">
-      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)">
-        <input type="checkbox" id="tFullWidth" onchange="applyTickerVars()"> 전체 너비로 표시
-      </label>
-    </div>
-    <div class="slider-row">
-      <div class="slider-label"><span>최대 너비</span><span class="slider-val" id="tMaxWidthV">900px</span></div>
-      <input type="range" id="tMaxWidth" min="400" max="1200" step="10" value="900" oninput="tickerValUpdate('tMaxWidth','tMaxWidthV','px');applyTickerVars()">
-    </div>
-    <div class="slider-row">
-      <div class="slider-label"><span>하단 여백</span><span class="slider-val" id="tBottomV">16px</span></div>
-      <input type="range" id="tBottom" min="0" max="48" step="1" value="16" oninput="tickerValUpdate('tBottom','tBottomV','px');applyTickerVars()">
-    </div>
-    <div class="slider-row">
-      <div class="slider-label"><span>좌우 여백</span><span class="slider-val" id="tSideV">16px</span></div>
-      <input type="range" id="tSide" min="0" max="64" step="1" value="16" oninput="tickerValUpdate('tSide','tSideV','px');applyTickerVars()">
-    </div>
-    <div class="slider-row">
-      <div class="slider-label"><span>높이</span><span class="slider-val" id="tHeightV">48px</span></div>
-      <input type="range" id="tHeight" min="32" max="72" step="1" value="48" oninput="tickerValUpdate('tHeight','tHeightV','px');applyTickerVars()">
-    </div>
-    <div class="slider-row">
-      <div class="slider-label"><span>모서리 둥글기</span><span class="slider-val" id="tRadiusV">16px</span></div>
-      <input type="range" id="tRadius" min="0" max="28" step="1" value="16" oninput="tickerValUpdate('tRadius','tRadiusV','px');applyTickerVars()">
-    </div>
-    <div class="slider-row">
-      <div class="slider-label"><span>배경 불투명도</span><span class="slider-val" id="tBgAlphaV">90%</span></div>
-      <input type="range" id="tBgAlpha" min="40" max="100" step="1" value="90" oninput="tickerValUpdate('tBgAlpha','tBgAlphaV','%');applyTickerVars()">
-    </div>
-    <div class="slider-row">
-      <div class="slider-label"><span>블러</span><span class="slider-val" id="tBlurV">12px</span></div>
-      <input type="range" id="tBlur" min="0" max="24" step="1" value="12" oninput="tickerValUpdate('tBlur','tBlurV','px');applyTickerVars()">
-    </div>
-    <div class="slider-row">
-      <div class="slider-label"><span>스크롤 속도</span><span class="slider-val" id="tSpeedV">60</span></div>
-      <input type="range" id="tSpeed" min="20" max="140" step="5" value="60" oninput="tickerValUpdate('tSpeed','tSpeedV','');applyTickerVars()">
-    </div>
-    <div class="slider-row">
-      <div class="slider-label"><span>폰트 크기</span><span class="slider-val" id="tFontSizeV">16px</span></div>
-      <input type="range" id="tFontSize" min="12" max="20" step="1" value="16" oninput="tickerValUpdate('tFontSize','tFontSizeV','px');applyTickerVars()">
-    </div>
-    <div class="slider-row">
-      <div class="slider-label"><span>아이템 간격</span><span class="slider-val" id="tItemGapV">48px</span></div>
-      <input type="range" id="tItemGap" min="16" max="80" step="2" value="48" oninput="tickerValUpdate('tItemGap','tItemGapV','px');applyTickerVars()">
-    </div>
-    <div class="slider-row">
-      <div class="slider-label"><span>카테고리 배지 크기</span><span class="slider-val" id="tCatFontSizeV">13px</span></div>
-      <input type="range" id="tCatFontSize" min="10" max="16" step="1" value="13" oninput="tickerValUpdate('tCatFontSize','tCatFontSizeV','px');applyTickerVars()">
-    </div>
-    <button class="save-btn" id="copyCssBtn" onclick="copyTickerCSS()">📋 CSS 변수 복사 (확장프로그램 포팅용)</button>
-    <div class="save-status" id="tickerSaveStatus">변경 시 이 브라우저에 자동 저장됨</div>
-  </div>
 </div>
 
 <div class="main">
@@ -285,15 +181,15 @@ input[type=range]{width:100%;accent-color:#fff;height:3px}
 </div>
 </div>
 
-<div class="ticker-float" id="tickerFloat">
-  <div class="ticker-float-label"><span class="ticker-dot-live"></span>NEWS</div>
-  <div class="ticker-float-track">
-    <div class="ticker-float-inner" id="tickerFloatInner">
+<div id="__news-ticker-root">
+  <div id="__news-ticker-label">📡 뉴스</div>
+  <div id="__news-ticker-track">
+    <div id="__news-ticker-inner">
       <span style="padding:0 14px;font-size:13px;color:rgba(255,255,255,0.5)">뉴스를 불러오는 중...</span>
     </div>
   </div>
-  <div class="ticker-float-controls">
-    <button id="tickerPauseBtn" onclick="toggleTickerPause()" title="일시정지 / 재생">⏸</button>
+  <div id="__news-ticker-controls">
+    <button onclick="document.getElementById('__news-ticker-root').classList.add('ticker-hidden')" title="닫기 (미리보기용, 새로고침하면 다시 보임)">✕</button>
   </div>
 </div>
 
@@ -326,11 +222,6 @@ let selSrc = new Set();
 let sortMode = 'score';
 let boostKws = [];
 let muteKws = [];
-let tickerOffset = 0;
-let tickerLast = null;
-let tickerRAF = null;
-let tickerSpeed = 60;
-let tickerPaused = false;
 
 function getWeights() {
   return {
@@ -397,6 +288,65 @@ function buildClusters(items) {
   });
 }
 
+// ── 노출 순서 그루핑 (worker의 buildDisplayOrder와 동일 로직 — 티커 미리보기용) ──
+const GROUP_SIZE = 4;
+const TARGET_GROUPS = 38;
+const TOP_RATIO = 0.15;
+const MIN_TOP = 6;
+const MAX_TOP = 15;
+const MID_SHARE_OF_REST = 0.75;
+const PROMOTE_SOURCE_COUNT = 3;
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function buildDisplayOrder(processed) {
+  const total = processed.length;
+  if (total < GROUP_SIZE) return processed;
+
+  const topCount = Math.min(
+    MAX_TOP,
+    Math.max(MIN_TOP, Math.round(total * TOP_RATIO)),
+    Math.max(1, total - 2)
+  );
+
+  const top = [];
+  const rest = [];
+  processed.forEach((item, i) => {
+    const promoted = item.sourceCount >= PROMOTE_SOURCE_COUNT || item.breaking;
+    if (top.length < topCount && (i < topCount || promoted)) {
+      top.push(item);
+    } else {
+      rest.push(item);
+    }
+  });
+
+  const midCount = Math.max(1, Math.round(rest.length * MID_SHARE_OF_REST));
+  const mid = rest.slice(0, midCount);
+  const tail = rest.slice(midCount);
+  if (!tail.length) tail.push(...mid);
+
+  const groupCount = Math.min(TARGET_GROUPS, Math.max(1, Math.floor(total / 2)));
+  let topCur = 0, midCur = 0, tailCur = 0;
+  const ordered = [];
+
+  for (let g = 0; g < groupCount; g++) {
+    const group = [
+      top[topCur++ % top.length],
+      mid[midCur++ % mid.length],
+      mid[midCur++ % mid.length],
+      tail[tailCur++ % tail.length],
+    ];
+    ordered.push(...shuffle(group));
+  }
+  return ordered;
+}
+
 // ── 하단 플로팅 티커: 아이템 렌더링 & 애니메이션 ──────────────
 // content.js의 renderTickerItem과 동일한 구조/클래스를 사용 (나중에 그대로 포팅)
 function renderTickerItem(article) {
@@ -445,119 +395,56 @@ function renderTickerItem(article) {
   return item;
 }
 
-function startFloatTicker(items) {
-  const inner = document.getElementById('tickerFloatInner');
-  if (!items.length) return;
-  const top = items.slice(0, 25);
+// content.js의 buildTicker/togglePause와 동일한 방식 (CSS 애니메이션 기반, 순환 렌더링).
+// 스타일은 전부 ../NEWS/ticker.css 소유 — 여기선 DOM만 채우고 --ticker-computed-duration만 계산한다.
+// 150개 전부 한번에 렌더링하면 DOM이 무거워져 프레임이 떨어지므로, 60개씩만 그리고
+// 루프가 자연스럽게 한 바퀴 끝나는 시점(animationiteration)에 다음 구간으로 교체한다.
+const TICKER_RENDER_COUNT = 60;
+let allTickerHeadlines = [];
+let tickerRenderOffset = 0;
+
+function renderTickerSlice() {
+  const root = document.getElementById('__news-ticker-root');
+  const inner = document.getElementById('__news-ticker-inner');
+  if (!allTickerHeadlines.length) return;
+
+  const count = Math.min(TICKER_RENDER_COUNT, allTickerHeadlines.length);
+  const slice = [];
+  for (let i = 0; i < count; i++) {
+    slice.push(allTickerHeadlines[(tickerRenderOffset + i) % allTickerHeadlines.length]);
+  }
+
   inner.innerHTML = '';
   const fragment = () => {
     const frag = document.createDocumentFragment();
-    top.forEach(a => frag.appendChild(renderTickerItem(a)));
+    slice.forEach(a => frag.appendChild(renderTickerItem(a)));
     return frag;
   };
   inner.appendChild(fragment());
   inner.appendChild(fragment());
 
-  if (tickerRAF) cancelAnimationFrame(tickerRAF);
-  tickerOffset = 0;
-  tickerLast = null;
-
-  function tick(ts) {
-    if (!tickerLast) tickerLast = ts;
-    const dt = ts - tickerLast;
-    tickerLast = ts;
-    if (!tickerPaused) {
-      tickerOffset += tickerSpeed * dt / 1000;
-      const half = inner.scrollWidth / 2;
-      if (half > 0) tickerOffset = tickerOffset % half;
-      inner.style.transform = `translateX(-${tickerOffset}px)`;
-    }
-    tickerRAF = requestAnimationFrame(tick);
-  }
-  tickerRAF = requestAnimationFrame(tick);
-}
-
-function toggleTickerPause() {
-  tickerPaused = !tickerPaused;
-  document.getElementById('tickerPauseBtn').textContent = tickerPaused ? '▶' : '⏸';
-}
-
-// ── 티커 튜닝: 슬라이더 값 → CSS 변수 (나중에 NEWS/ticker.css로 그대로 포팅) ──
-function val(id) { return document.getElementById(id).value; }
-
-function tickerValUpdate(inputId, valId, suffix) {
-  document.getElementById(valId).textContent = val(inputId) + suffix;
-}
-
-const TICKER_TUNING_KEY = 'newsTickerTuning';
-const TICKER_INPUT_IDS = ['tBottom','tSide','tMaxWidth','tHeight','tRadius','tBgAlpha','tBlur','tSpeed','tFontSize','tItemGap','tCatFontSize'];
-
-function applyTickerVars() {
-  const root = document.documentElement.style;
-  root.setProperty('--ticker-bottom', val('tBottom') + 'px');
-  root.setProperty('--ticker-side', val('tSide') + 'px');
-  root.setProperty('--ticker-max-width', val('tMaxWidth') + 'px');
-  root.setProperty('--ticker-height', val('tHeight') + 'px');
-  root.setProperty('--ticker-radius', val('tRadius') + 'px');
-  root.setProperty('--ticker-bg-alpha', val('tBgAlpha') / 100);
-  root.setProperty('--ticker-blur', val('tBlur') + 'px');
-  root.setProperty('--ticker-speed', val('tSpeed'));
-  root.setProperty('--ticker-font-size', val('tFontSize') + 'px');
-  root.setProperty('--ticker-item-gap', val('tItemGap') + 'px');
-  root.setProperty('--ticker-cat-font-size', val('tCatFontSize') + 'px');
-
-  document.getElementById('tickerFloat').classList.toggle('full-width', document.getElementById('tFullWidth').checked);
-
-  tickerSpeed = Number(val('tSpeed')) || 60;
-
-  const clearance = Number(val('tHeight')) + Number(val('tBottom')) + 16;
-  document.getElementById('articleList').style.paddingBottom = clearance + 'px';
-
-  saveTickerTuningLocal();
-}
-
-function saveTickerTuningLocal() {
-  const cfg = { fullWidth: document.getElementById('tFullWidth').checked };
-  TICKER_INPUT_IDS.forEach(id => { cfg[id] = val(id); });
-  localStorage.setItem(TICKER_TUNING_KEY, JSON.stringify(cfg));
-}
-
-function loadTickerTuningLocal() {
-  try {
-    const raw = localStorage.getItem(TICKER_TUNING_KEY);
-    if (!raw) return;
-    const cfg = JSON.parse(raw);
-    TICKER_INPUT_IDS.forEach(id => {
-      if (cfg[id] == null) return;
-      document.getElementById(id).value = cfg[id];
-    });
-    if (cfg.fullWidth != null) document.getElementById('tFullWidth').checked = cfg.fullWidth;
-    tickerValUpdate('tBottom','tBottomV','px');
-    tickerValUpdate('tSide','tSideV','px');
-    tickerValUpdate('tMaxWidth','tMaxWidthV','px');
-    tickerValUpdate('tHeight','tHeightV','px');
-    tickerValUpdate('tRadius','tRadiusV','px');
-    tickerValUpdate('tBgAlpha','tBgAlphaV','%');
-    tickerValUpdate('tBlur','tBlurV','px');
-    tickerValUpdate('tSpeed','tSpeedV','');
-    tickerValUpdate('tFontSize','tFontSizeV','px');
-    tickerValUpdate('tItemGap','tItemGapV','px');
-    tickerValUpdate('tCatFontSize','tCatFontSizeV','px');
-  } catch (e) {
-    console.warn('티커 튜닝 로드 실패', e.message);
-  }
-}
-
-function copyTickerCSS() {
-  const fullWidth = document.getElementById('tFullWidth').checked;
-  const css = `:root {\n  --ticker-height: ${val('tHeight')}px;\n  --ticker-speed: ${val('tSpeed')};\n  --ticker-font-size: ${val('tFontSize')}px;\n  --ticker-item-gap: ${val('tItemGap')}px;\n  --ticker-cat-font-size: ${val('tCatFontSize')}px;\n  --ticker-radius: ${val('tRadius')}px;\n  --ticker-bottom: ${val('tBottom')}px;\n  --ticker-side: ${val('tSide')}px;\n  --ticker-max-width: ${fullWidth ? 'none' : val('tMaxWidth') + 'px'};\n  --ticker-bg-alpha: ${(val('tBgAlpha') / 100).toFixed(2)};\n  --ticker-blur: ${val('tBlur')}px;\n}`;
-  navigator.clipboard.writeText(css).then(() => {
-    const el = document.getElementById('tickerSaveStatus');
-    el.textContent = 'CSS 복사 완료!';
-    el.className = 'save-status ok';
-    setTimeout(() => { el.textContent = '변경 시 이 브라우저에 자동 저장됨'; el.className = 'save-status'; }, 2000);
+  requestAnimationFrame(() => {
+    const speed = parseFloat(getComputedStyle(root).getPropertyValue('--ticker-speed')) || 60;
+    const halfWidth = inner.scrollWidth / 2;
+    const duration = halfWidth / speed;
+    inner.style.setProperty('--ticker-computed-duration', `${duration}s`);
   });
 }
+
+function startFloatTicker(items) {
+  if (!items.length) return;
+  allTickerHeadlines = items;
+  tickerRenderOffset = 0;
+  renderTickerSlice();
+}
+
+// 루프가 한 바퀴 끝나는 순간(위치가 이미 처음으로 리셋된 시점)에 다음 구간으로
+// 교체 — 이 타이밍에 바꾸면 시각적으로 튀지 않는다.
+document.getElementById('__news-ticker-inner').addEventListener('animationiteration', () => {
+  if (allTickerHeadlines.length <= TICKER_RENDER_COUNT) return;
+  tickerRenderOffset = (tickerRenderOffset + TICKER_RENDER_COUNT) % allTickerHeadlines.length;
+  renderTickerSlice();
+});
 
 // ── 데이터 로드 ──────────────────────────────
 async function loadData() {
@@ -686,7 +573,8 @@ function rerender() {
   document.getElementById('resultCnt').textContent = `${clusters.length}건`;
   document.getElementById('showCnt').textContent = clusters.length;
 
-  startFloatTicker([...clusters].sort((a,b) => b.score - a.score));
+  const scoreSorted = [...clusters].sort((a,b) => b.score - a.score);
+  startFloatTicker(buildDisplayOrder(scoreSorted));
 
   const list = document.getElementById('articleList');
   list.innerHTML = '';
@@ -776,9 +664,6 @@ document.getElementById('boostInput').onkeydown = e => { if (e.key === 'Enter') 
 document.getElementById('muteInput').onkeydown = e => { if (e.key === 'Enter') addKw('mute'); };
 
 // ── 초기 로드: 저장된 설정부터 불러온 뒤 기사 로드 ──────────
-loadTickerTuningLocal();
-applyTickerVars();
-
 (async () => {
   await loadConfig();
   await loadData();

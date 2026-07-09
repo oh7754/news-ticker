@@ -28,6 +28,7 @@ function buildHeadlines(items) {
     signal: item.breaking ? "breaking" : null,
     publishedAt: item.publishedAt,
     score: item.score,
+    relatedArticles: item.relatedArticles || [],
   }));
 }
 
@@ -37,7 +38,7 @@ async function refreshHeadlines() {
   const headlines = buildHeadlines(items);
 
   await chrome.storage.local.set({
-    headlines: headlines.slice(0, 50),
+    headlines: headlines.slice(0, 150),
     lastUpdated: Date.now()
   });
 

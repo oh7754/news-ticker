@@ -18,8 +18,6 @@
     tech: "기술",
   };
 
-  let paused = false;
-
   // ── DOM 구성 ──────────────────────────────────────────
   const root = document.createElement("div");
   root.id = "__news-ticker-root";
@@ -38,26 +36,16 @@
   const controls = document.createElement("div");
   controls.id = "__news-ticker-controls";
 
-  const btnPause = document.createElement("button");
-  btnPause.textContent = "⏸";
-  btnPause.title = "일시정지 / 재생";
-  btnPause.onclick = togglePause;
-
-  const btnRefresh = document.createElement("button");
-  btnRefresh.textContent = "↺";
-  btnRefresh.title = "새로고침";
-  btnRefresh.onclick = () => {
-    chrome.runtime.sendMessage({ type: "REFRESH" }, () => {
-      setTimeout(loadHeadlines, 2000);
-    });
+  const btnClose = document.createElement("button");
+  btnClose.className = "__news-ticker-btn";
+  btnClose.textContent = "✕";
+  btnClose.title = "이 페이지에서만 닫기 (새로고침하면 다시 보임)";
+  btnClose.onclick = () => {
+    if (tagMode) exitTagMode();
+    else dismissTicker();
   };
 
-  const btnHide = document.createElement("button");
-  btnHide.textContent = "✕";
-  btnHide.title = "숨기기 (팝업에서 다시 표시)";
-  btnHide.onclick = hideTicker;
-
-  controls.append(btnPause, btnRefresh, btnHide);
+  controls.append(btnClose);
   root.append(label, track, controls);
 
   // ── 기사 하나를 .ticker-item 구조로 렌더링 ──────────────
@@ -109,16 +97,12 @@
     return item;
   }
 
-  // ── 헤드라인 로드 & 렌더 ──────────────────────────────
-  function buildTicker(items) {
-    if (!items.length) {
-      inner.textContent = "뉴스를 불러오는 중...";
-      return;
-    }
-
+  // ── 공통 렌더링: 아이템 목록을 두 벌 복사해서 seamless 마퀴로 흘려보낸다 ──
+  // renderSlice(평소 로테이션)랑 renderClusterTag(관련기사 고정 목록) 둘 다
+  // 이걸 씀 — 짧으면 짧은 대로 금방 한 바퀴 돌고, 길면 그만큼 흘러가며 전부 보여준다.
+  function renderItemsToTicker(items) {
     inner.innerHTML = "";
 
-    // 두 벌 복사해서 seamless loop
     const fragment = () => {
       const frag = document.createDocumentFragment();
       items.forEach((article) => frag.appendChild(renderTickerItem(article)));
@@ -138,6 +122,108 @@
     });
   }
 
+  // ── 헤드라인 로드 & 렌더 (평소 로테이션) ────────────────
+  // 한 번에 다 렌더링하면(최대 150개) DOM이 무거워져서 프레임이 떨어지므로,
+  // RENDER_COUNT개씩만 그리고 루프가 자연스럽게 한 바퀴 끝나는 시점
+  // (animationiteration)에 다음 구간으로 교체한다. 네트워크 재요청 없이
+  // 이미 받아둔 전체 목록(allHeadlines) 안에서만 순환하므로 API 부담이 없다.
+  const RENDER_COUNT = 60;
+  let allHeadlines = [];
+  let renderOffset = 0;
+
+  function renderSlice() {
+    if (!allHeadlines.length) {
+      inner.textContent = "뉴스를 불러오는 중...";
+      return;
+    }
+
+    const count = Math.min(RENDER_COUNT, allHeadlines.length);
+    const slice = [];
+    for (let i = 0; i < count; i++) {
+      slice.push(allHeadlines[(renderOffset + i) % allHeadlines.length]);
+    }
+
+    renderItemsToTicker(slice);
+  }
+
+  // ── 클러스터 태그 모드 ──────────────────────────────────
+  // 지금 보고 있는 페이지가 클러스터링된 기사(여러 언론사가 같이 다룬 사건) 중
+  // 하나면, 평소 로테이션 대신 같은 사건을 다룬 다른 언론사 기사들을 보여준다.
+  // RSS 링크가 트래킹 파라미터나 AMP 버전 때문에 현재 주소창 URL과 완전히
+  // 똑같지 않을 수 있어서, 쿼리스트링/해시/www를 뺀 "호스트+경로"만 비교하는
+  // 느슨한 매칭을 쓴다.
+  let tagMode = false;
+
+  function normalizeUrl(url) {
+    try {
+      const u = new URL(url);
+      return (u.hostname.replace(/^www\./, "") + u.pathname).replace(/\/$/, "");
+    } catch {
+      return url;
+    }
+  }
+
+  function findClusterMatch() {
+    const current = normalizeUrl(location.href);
+    for (const item of allHeadlines) {
+      const related = item.relatedArticles || [];
+      if (!related.length) continue;
+      const members = [{ domain: item.domain, link: item.link, title: item.title }, ...related];
+      const isMatch = members.some((m) => normalizeUrl(m.link) === current);
+      if (!isMatch) continue;
+      const others = members.filter((m) => normalizeUrl(m.link) !== current);
+      if (others.length) return others;
+    }
+    return null;
+  }
+
+  function renderClusterTag(others) {
+    tagMode = true;
+    // 닫기 버튼은 "티커 전체 닫기"가 아니라 "이 태그 해제"라서, 오른쪽 끝
+    // 컨트롤 자리가 아니라 태그 라벨 바로 옆으로 옮긴다 (같은 맥락끼리 묶임).
+    label.textContent = "🏷️ 같은 소식 다른 언론사";
+    label.appendChild(btnClose);
+    btnClose.title = "닫기 (원래 티커로 복귀)";
+    renderItemsToTicker(others.map((article) => ({
+      title: article.title,
+      link: article.link,
+      domain: article.domain,
+      cat: null,
+      cluster: 0,
+      signal: null,
+    })));
+  }
+
+  function exitTagMode() {
+    tagMode = false;
+    label.textContent = "📡 뉴스";
+    controls.appendChild(btnClose);
+    btnClose.title = "이 페이지에서만 닫기 (새로고침하면 다시 보임)";
+    renderOffset = 0;
+    renderSlice();
+  }
+
+  function buildTicker(items) {
+    allHeadlines = items;
+    renderOffset = 0;
+    const match = findClusterMatch();
+    if (match) {
+      renderClusterTag(match);
+    } else {
+      renderSlice();
+    }
+  }
+
+  // 루프가 한 바퀴 끝나는 순간(위치가 이미 처음으로 리셋된 시점)에 다음
+  // RENDER_COUNT개로 교체 — 이 타이밍에 바꾸면 시각적으로 튀지 않는다.
+  // 태그 모드일 때는 (고정된 관련기사 목록을 그대로 계속 반복하면 되므로)
+  // 다음 구간으로 교체할 필요가 없어서 스킵한다.
+  inner.addEventListener("animationiteration", () => {
+    if (tagMode || allHeadlines.length <= RENDER_COUNT) return;
+    renderOffset = (renderOffset + RENDER_COUNT) % allHeadlines.length;
+    renderSlice();
+  });
+
   function loadHeadlines() {
     chrome.runtime.sendMessage({ type: "GET_HEADLINES" }, (data) => {
       if (data && data.headlines) buildTicker(data.headlines);
@@ -145,33 +231,30 @@
   }
 
   // ── 컨트롤 ────────────────────────────────────────────
-  function togglePause() {
-    paused = !paused;
-    inner.classList.toggle("is-paused", paused);
-    btnPause.textContent = paused ? "▶" : "⏸";
+  // ✕ 버튼: 이 페이지(탭)에서만 즉시 닫는다. chrome.storage에 저장하지
+  // 않으므로 새로고침하거나 다른 탭으로 가면 다시 나타난다 — 유튜브처럼
+  // 컨트롤을 가릴 때 잠깐 치우는 용도. 팝업의 "티커 표시" 토글(전역, 영구)과는
+  // 별개로 동작한다.
+  function dismissTicker() {
+    root.classList.add("ticker-hidden");
   }
 
+  // 팝업에서 끄고 켜는 전역 설정 (모든 탭·새로고침에 걸쳐 유지됨)
   function hideTicker() {
     root.classList.add("ticker-hidden");
-    document.documentElement.classList.remove("__news-ticker-offset");
     chrome.storage.local.set({ tickerHidden: true });
   }
 
   function showTicker() {
     root.classList.remove("ticker-hidden");
-    document.documentElement.classList.add("__news-ticker-offset");
     chrome.storage.local.set({ tickerHidden: false });
   }
 
   // ── 마운트 ────────────────────────────────────────────
   function mount() {
-    // 숨김 상태 복원
+    // 숨김 상태 복원 (플로팅 카드는 오버레이라 페이지 레이아웃을 밀어낼 필요 없음)
     chrome.storage.local.get({ tickerHidden: false }, ({ tickerHidden }) => {
-      if (tickerHidden) {
-        root.classList.add("ticker-hidden");
-      } else {
-        document.documentElement.classList.add("__news-ticker-offset");
-      }
+      if (tickerHidden) root.classList.add("ticker-hidden");
     });
 
     document.documentElement.insertBefore(root, document.documentElement.firstChild);
