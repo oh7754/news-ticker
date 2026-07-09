@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "KR News Ticker (MVP)",
+  "version": "0.1.0",
+  "description": "모든 웹페이지 상단에 KR 뉴스 헤드라인 티커 바를 띄웁니다.",
+  "action": {
+    "default_title": "KR News Ticker",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "tabs"
+  ],
+  "host_permissions": [
+    "*://*.yonhapnewstv.co.kr/*",
+    "*://*.mk.co.kr/*",
+    "*://*.hankyung.com/*",
+    "*://*.donga.com/*",
+    "*://rss.donga.com/*",
+    "*://*.khan.co.kr/*",
+    "*://*.chosun.com/*",
+    "*://*.hani.co.kr/*",
+    "*://news.sbs.co.kr/*",
+    "*://*.sbs.co.kr/*",
+    "*://imnews.imbc.com/*",
+    "*://*.imbc.com/*",
+    "*://feeds.bbci.co.uk/*",
+    "*://rss.nytimes.com/*",
+    "*://www3.nhk.or.jp/*",
+    "*://feeds.a.dj.com/*",
+    "*://feeds.washingtonpost.com/*",
+    "*://www.pewresearch.org/*",
+    "*://www.latimes.com/*",
+    "*://www.chicagotribune.com/*",
+    "*://www.startribune.com/*",
+    "*://news.google.com/*",
+    "*://rss.cnn.com/*",
+    "*://feeds.nbcnews.com/*",
+    "*://abcnews.go.com/*",
+    "*://www.cbsnews.com/*",
+    "*://www.cnbc.com/*",
+    "*://www.ft.com/*"
+  ],
+  "background": {
+    "service_worker": "service_worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>News Ticker — Admin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0b0b0f;--bg2:#111118;--fg:rgba(255,255,255,0.92);--muted:rgba(255,255,255,0.5);--line:rgba(255,255,255,0.08);--line2:rgba(255,255,255,0.13)}
+body{background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,sans-serif;font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ══ 하단 플로팅 티커 (실제 확장프로그램 ticker.css와 동일한 클래스/변수 구조) ══
+   여기서 튜닝한 --ticker-* 값은 나중에 NEWS/ticker.css의 :root로 그대로 옮길 수 있음 */
+:root{
+  --ticker-height:48px;
+  --ticker-bg-alpha:0.9;
+  --ticker-blur:12px;
+  --ticker-radius:16px;
+  --ticker-bottom:16px;
+  --ticker-side:16px;
+  --ticker-max-width:900px;
+  --ticker-speed:60;
+  --ticker-font-size:16px;
+  --ticker-font-weight-source:600;
+  --ticker-font-weight-title:500;
+  --ticker-gap:8px;
+  --ticker-item-gap:48px;
+  --ticker-cat-font-size:13px;
+  --ticker-cat-bg-alpha:0.18;
+}
+
+.ticker-dot-live{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.ticker-float{
+  position:fixed;left:50%;bottom:var(--ticker-bottom);transform:translateX(-50%);
+  width:calc(100% - var(--ticker-side) * 2);max-width:var(--ticker-max-width);height:var(--ticker-height);
+  background:rgba(17,17,17,var(--ticker-bg-alpha));
+  backdrop-filter:blur(var(--ticker-blur));-webkit-backdrop-filter:blur(var(--ticker-blur));
+  border-radius:var(--ticker-radius);border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 8px 32px rgba(0,0,0,0.45);
+  display:flex;align-items:center;overflow:hidden;z-index:500;font-family:inherit;
+}
+.ticker-float.full-width{max-width:none}
+.ticker-float-label{flex-shrink:0;padding:0 14px;font-size:11px;font-weight:700;letter-spacing:.05em;color:rgba(255,255,255,0.55);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.ticker-float-track{flex:1;overflow:hidden;height:100%;position:relative;mask-image:linear-gradient(to right,transparent,black 16px,black calc(100% - 16px),transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 16px,black calc(100% - 16px),transparent)}
+.ticker-float-inner{display:flex;align-items:center;height:100%;gap:var(--ticker-item-gap);white-space:nowrap;will-change:transform}
+.ticker-float-controls{flex-shrink:0;display:flex;align-items:center;padding:0 10px}
+.ticker-float-controls button{background:none;border:none;color:rgba(255,255,255,0.55);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:4px;transition:.15s}
+.ticker-float-controls button:hover{color:#fff;background:rgba(255,255,255,0.1)}
+
+/* ── 티커 아이템 (실제 확장프로그램 content.js의 renderTickerItem과 동일 구조/클래스) ── */
+.ticker-item{display:inline-flex;align-items:center;gap:var(--ticker-gap);flex-shrink:0;color:inherit;text-decoration:none;cursor:pointer}
+.ticker-item:hover .ticker-title{color:#f9c74f}
+.ticker-source{display:flex;align-items:center;gap:2px}
+.ticker-source-name{font-size:var(--ticker-font-size);font-weight:var(--ticker-font-weight-source);color:#fff;white-space:nowrap}
+.ticker-cluster{font-size:var(--ticker-font-size);font-weight:var(--ticker-font-weight-source);color:#fff;opacity:.5;white-space:nowrap}
+.ticker-cat{padding:4px 8px;border-radius:99px;font-size:var(--ticker-cat-font-size);font-weight:600;line-height:1;white-space:nowrap;background:rgba(var(--cat-r),var(--cat-g),var(--cat-b),var(--ticker-cat-bg-alpha));color:rgb(var(--cat-r),var(--cat-g),var(--cat-b))}
+.ticker-article{display:flex;align-items:center;gap:6px}
+.ticker-title{font-size:var(--ticker-font-size);font-weight:var(--ticker-font-weight-title);color:#fff;white-space:nowrap;transition:color .15s}
+.ticker-dot{flex-shrink:0;width:6px;height:6px;border-radius:99px;background:#f00;box-shadow:0 0 4px 2px rgba(255,0,0,.6)}
+
+.cat-politics{--cat-r:239;--cat-g:68;--cat-b:68}
+.cat-economy{--cat-r:16;--cat-g:185;--cat-b:129}
+.cat-society{--cat-r:59;--cat-g:130;--cat-b:246}
+.cat-world{--cat-r:168;--cat-g:85;--cat-b:247}
+.cat-culture{--cat-r:236;--cat-g:72;--cat-b:153}
+.cat-entertainment{--cat-r:236;--cat-g:72;--cat-b:153}
+.cat-sports{--cat-r:245;--cat-g:158;--cat-b:11}
+.cat-tech{--cat-r:6;--cat-g:182;--cat-b:212}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:230px 1fr;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{background:var(--bg2);border-right:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.s-title{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin-bottom:7px;text-transform:uppercase}
+
+.country-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.ctab{padding:6px 0;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;text-align:center;transition:.15s}
+.ctab.active{background:rgba(255,255,255,0.1);border-color:var(--line2);color:var(--fg)}
+.ctab:hover:not(.active){background:rgba(255,255,255,0.04)}
+
+.cat-list,.source-list{display:flex;flex-direction:column;gap:2px}
+.cat-item,.source-item{display:flex;align-items:center;justify-content:space-between;padding:5px 7px;border-radius:6px;cursor:pointer;transition:.15s}
+.cat-item:hover,.source-item:hover{background:rgba(255,255,255,0.04)}
+.cat-item.active,.source-item.active{background:rgba(255,255,255,0.07)}
+.cat-left,.src-left{display:flex;align-items:center;gap:6px}
+.cat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cat-name,.src-name{font-size:12px}
+.cat-cnt,.src-cnt{font-size:10px;color:var(--muted)}
+.src-cb{width:13px;height:13px;border-radius:3px;border:1px solid var(--line2);background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:transparent}
+.source-item.active .src-cb{background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.4);color:rgba(255,255,255,0.9)}
+
+.kw-input-row{display:flex;gap:5px}
+.kw-input{flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--line);border-radius:6px;padding:5px 7px;color:var(--fg);font-size:12px;outline:none}
+.kw-input:focus{border-color:var(--line2)}
+.kw-add{background:rgba(255,255,255,0.07);border:1px solid var(--line);border-radius:6px;padding:5px 9px;color:var(--fg);font-size:13px;cursor:pointer}
+.kw-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.kw-tag{font-size:11px;padding:2px 7px;border-radius:999px;border:1px solid;display:flex;align-items:center;gap:4px}
+.kw-boost{border-color:rgba(16,185,129,0.35);background:rgba(16,185,129,0.1);color:rgba(16,185,129,0.9)}
+.kw-mute{border-color:rgba(239,68,68,0.35);background:rgba(239,68,68,0.1);color:rgba(239,68,68,0.9)}
+.kw-remove{cursor:pointer;opacity:.6;font-size:10px}
+.kw-remove:hover{opacity:1}
+
+.slider-row{display:flex;flex-direction:column;gap:3px;margin-bottom:7px}
+.slider-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.slider-val{color:var(--fg)}
+input[type=range]{width:100%;accent-color:#fff;height:3px}
+
+.save-btn{width:100%;margin-top:4px;font-size:12px;padding:8px;border-radius:6px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.12);color:rgba(16,185,129,0.95);cursor:pointer;font-weight:600;transition:.15s}
+.save-btn:hover{background:rgba(16,185,129,0.2)}
+.save-status{font-size:10px;color:var(--muted);margin-top:5px;min-height:14px}
+.save-status.ok{color:rgba(16,185,129,0.9)}
+.save-status.err{color:rgba(239,68,68,0.9)}
+
+/* MAIN */
+.main{display:flex;flex-direction:column;overflow:hidden}
+.admin-bar{display:flex;align-items:center;gap:10px;padding:7px 12px;border-bottom:1px solid var(--line);background:rgba(255,255,255,0.02);flex-shrink:0;flex-wrap:wrap}
+.admin-badge{font-size:10px;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,0.07);border:1px solid var(--line2);color:var(--muted)}
+.admin-stat{font-size:11px;color:var(--muted)}
+.admin-stat b{color:var(--fg);font-weight:500}
+.refresh-btn{margin-left:auto;font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--line2);background:rgba(255,255,255,0.05);color:var(--fg);cursor:pointer;transition:.15s}
+.refresh-btn:hover{background:rgba(255,255,255,0.1)}
+.loading-bar{height:2px;background:linear-gradient(90deg,#c00,#ff6b6b,#c00);background-size:200%;animation:loading 1s linear infinite;display:none}
+.loading-bar.show{display:block}
+@keyframes loading{0%{background-position:200%}100%{background-position:-200%}}
+
+.toolbar{display:flex;align-items:center;gap:7px;padding:8px 12px;border-bottom:1px solid var(--line);flex-shrink:0}
+.sort-btn{padding:4px 9px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:.15s}
+.sort-btn.active{background:rgba(255,255,255,0.08);border-color:var(--line2);color:var(--fg)}
+.sort-btn:hover:not(.active){background:rgba(255,255,255,0.04)}
+.result-cnt{font-size:11px;color:var(--muted);margin-left:auto}
+
+.article-list{flex:1;overflow-y:auto;padding:6px}
+.article-item{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:start;padding:9px 10px;border-radius:7px;border:1px solid transparent;cursor:pointer;transition:.15s;margin-bottom:3px}
+.article-item:hover{background:rgba(255,255,255,0.03);border-color:var(--line)}
+.rank{font-size:11px;color:var(--muted);text-align:right;padding-top:2px}
+.article-meta{display:flex;align-items:center;gap:5px;margin-bottom:3px;flex-wrap:wrap}
+.article-title{font-size:12px;line-height:1.45;color:var(--fg)}
+.article-source{font-size:11px;color:var(--muted)}
+.cat-badge{font-size:10px;padding:2px 6px;border-radius:999px;border:1px solid;line-height:1;white-space:nowrap}
+.score-col{display:flex;flex-direction:column;align-items:flex-end;gap:3px;padding-top:2px}
+.score-num{font-size:11px;padding:2px 7px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,0.05);min-width:36px;text-align:center}
+.article-time{font-size:10px;color:var(--muted)}
+
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:8px;color:var(--muted);font-size:12px}
+.error-state{color:rgba(239,68,68,0.8)}
+</style>
+</head>
+<body>
+
+<div class="layout">
+<div class="sidebar">
+  <div>
+    <div class="s-title">국가</div>
+    <div class="country-tabs">
+      <button class="ctab active" onclick="setCountry(this,'kr')">KR</button>
+      <button class="ctab" onclick="setCountry(this,'us')">US</button>
+      <button class="ctab" onclick="setCountry(this,'en')">EN</button>
+      <button class="ctab" onclick="setCountry(this,'jp')">JP</button>
+    </div>
+  </div>
+  <div>
+    <div class="s-title">카테고리</div>
+    <div class="cat-list" id="catList"></div>
+  </div>
+  <div>
+    <div class="s-title">언론사</div>
+    <div class="source-list" id="sourceList"></div>
+  </div>
+  <div>
+    <div class="s-title">키워드 부스트</div>
+    <div class="kw-input-row">
+      <input class="kw-input" id="boostInput" placeholder="키워드">
+      <button class="kw-add" onclick="addKw('boost')">+</button>
+    </div>
+    <div class="kw-tags" id="boostTags"></div>
+  </div>
+  <div>
+    <div class="s-title">키워드 뮤트</div>
+    <div class="kw-input-row">
+      <input class="kw-input" id="muteInput" placeholder="키워드">
+      <button class="kw-add" onclick="addKw('mute')">+</button>
+    </div>
+    <div class="kw-tags" id="muteTags"></div>
+  </div>
+  <div>
+    <div class="s-title">점수 가중치</div>
+    <div class="slider-row">
+      <div class="slider-label"><span>최신성</span><span class="slider-val" id="v1">70</span></div>
+      <input type="range" min="0" max="100" value="70" step="1" oninput="document.getElementById('v1').textContent=this.value;rerender()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>클러스터 보너스</span><span class="slider-val" id="v2">50</span></div>
+      <input type="range" min="0" max="100" value="50" step="1" oninput="document.getElementById('v2').textContent=this.value;rerender()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>속보 보너스</span><span class="slider-val" id="v3">80</span></div>
+      <input type="range" min="0" max="100" value="80" step="1" oninput="document.getElementById('v3').textContent=this.value;rerender()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>키워드 부스트량</span><span class="slider-val" id="v4">60</span></div>
+      <input type="range" min="0" max="100" value="60" step="1" oninput="document.getElementById('v4').textContent=this.value;rerender()">
+    </div>
+    <button class="save-btn" onclick="saveConfig()">💾 설정 저장 (서버에 반영)</button>
+    <div class="save-status" id="saveStatus"></div>
+  </div>
+  <div>
+    <div class="s-title">티커 (하단 플로팅)</div>
+
+    <div class="slider-row">
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)">
+        <input type="checkbox" id="tFullWidth" onchange="applyTickerVars()"> 전체 너비로 표시
+      </label>
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>최대 너비</span><span class="slider-val" id="tMaxWidthV">900px</span></div>
+      <input type="range" id="tMaxWidth" min="400" max="1200" step="10" value="900" oninput="tickerValUpdate('tMaxWidth','tMaxWidthV','px');applyTickerVars()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>하단 여백</span><span class="slider-val" id="tBottomV">16px</span></div>
+      <input type="range" id="tBottom" min="0" max="48" step="1" value="16" oninput="tickerValUpdate('tBottom','tBottomV','px');applyTickerVars()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>좌우 여백</span><span class="slider-val" id="tSideV">16px</span></div>
+      <input type="range" id="tSide" min="0" max="64" step="1" value="16" oninput="tickerValUpdate('tSide','tSideV','px');applyTickerVars()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>높이</span><span class="slider-val" id="tHeightV">48px</span></div>
+      <input type="range" id="tHeight" min="32" max="72" step="1" value="48" oninput="tickerValUpdate('tHeight','tHeightV','px');applyTickerVars()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>모서리 둥글기</span><span class="slider-val" id="tRadiusV">16px</span></div>
+      <input type="range" id="tRadius" min="0" max="28" step="1" value="16" oninput="tickerValUpdate('tRadius','tRadiusV','px');applyTickerVars()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>배경 불투명도</span><span class="slider-val" id="tBgAlphaV">90%</span></div>
+      <input type="range" id="tBgAlpha" min="40" max="100" step="1" value="90" oninput="tickerValUpdate('tBgAlpha','tBgAlphaV','%');applyTickerVars()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>블러</span><span class="slider-val" id="tBlurV">12px</span></div>
+      <input type="range" id="tBlur" min="0" max="24" step="1" value="12" oninput="tickerValUpdate('tBlur','tBlurV','px');applyTickerVars()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>스크롤 속도</span><span class="slider-val" id="tSpeedV">60</span></div>
+      <input type="range" id="tSpeed" min="20" max="140" step="5" value="60" oninput="tickerValUpdate('tSpeed','tSpeedV','');applyTickerVars()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>폰트 크기</span><span class="slider-val" id="tFontSizeV">16px</span></div>
+      <input type="range" id="tFontSize" min="12" max="20" step="1" value="16" oninput="tickerValUpdate('tFontSize','tFontSizeV','px');applyTickerVars()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>아이템 간격</span><span class="slider-val" id="tItemGapV">48px</span></div>
+      <input type="range" id="tItemGap" min="16" max="80" step="2" value="48" oninput="tickerValUpdate('tItemGap','tItemGapV','px');applyTickerVars()">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label"><span>카테고리 배지 크기</span><span class="slider-val" id="tCatFontSizeV">13px</span></div>
+      <input type="range" id="tCatFontSize" min="10" max="16" step="1" value="13" oninput="tickerValUpdate('tCatFontSize','tCatFontSizeV','px');applyTickerVars()">
+    </div>
+    <button class="save-btn" id="copyCssBtn" onclick="copyTickerCSS()">📋 CSS 변수 복사 (확장프로그램 포팅용)</button>
+    <div class="save-status" id="tickerSaveStatus">변경 시 이 브라우저에 자동 저장됨</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="admin-bar">
+    <span class="admin-badge">ADMIN</span>
+    <span class="admin-stat">원본 <b id="totalCnt">–</b>건</span>
+    <span class="admin-stat">언론사 <b id="srcCnt">–</b>개</span>
+    <span class="admin-stat">클러스터 <b id="showCnt">–</b>건</span>
+    <span class="admin-stat">갱신 <b id="updatedAt">–</b></span>
+    <button class="refresh-btn" onclick="loadData()">↺ 새로고침</button>
+  </div>
+  <div class="loading-bar" id="loadingBar"></div>
+  <div class="toolbar">
+    <button class="sort-btn active" onclick="setSort(this,'score')">점수순</button>
+    <button class="sort-btn" onclick="setSort(this,'time')">최신순</button>
+    <button class="sort-btn" onclick="setSort(this,'source')">언론사순</button>
+    <div class="result-cnt" id="resultCnt">–건</div>
+  </div>
+  <div class="article-list" id="articleList">
+    <div class="empty-state">데이터 불러오는 중...</div>
+  </div>
+</div>
+</div>
+
+<div class="ticker-float" id="tickerFloat">
+  <div class="ticker-float-label"><span class="ticker-dot-live"></span>NEWS</div>
+  <div class="ticker-float-track">
+    <div class="ticker-float-inner" id="tickerFloatInner">
+      <span style="padding:0 14px;font-size:13px;color:rgba(255,255,255,0.5)">뉴스를 불러오는 중...</span>
+    </div>
+  </div>
+  <div class="ticker-float-controls">
+    <button id="tickerPauseBtn" onclick="toggleTickerPause()" title="일시정지 / 재생">⏸</button>
+  </div>
+</div>
+
+<script>
+const WORKER_URL = "https://news-ticker-worker.ojh7754.workers.dev";
+const CLUSTER_THRESHOLD = 0.4;
+
+const CAT_COLORS = {
+  politics:{c:'rgba(239,68,68,0.85)',b:'rgba(239,68,68,0.3)'},
+  economy:{c:'rgba(16,185,129,0.85)',b:'rgba(16,185,129,0.3)'},
+  society:{c:'rgba(59,130,246,0.85)',b:'rgba(59,130,246,0.3)'},
+  world:{c:'rgba(168,85,247,0.85)',b:'rgba(168,85,247,0.3)'},
+  culture:{c:'rgba(236,72,153,0.85)',b:'rgba(236,72,153,0.3)'},
+  sports:{c:'rgba(245,158,11,0.85)',b:'rgba(245,158,11,0.3)'},
+  tech:{c:'rgba(6,182,212,0.85)',b:'rgba(6,182,212,0.3)'},
+  entertainment:{c:'rgba(217,70,239,0.85)',b:'rgba(217,70,239,0.3)'},
+};
+
+const CAT_LABELS = {
+  kr:{politics:'정치',economy:'경제',tech:'기술',world:'국제',culture:'문화',entertainment:'연예',sports:'스포츠',society:'사회'},
+  us:{politics:'Politics',economy:'Economy',tech:'Tech',world:'World',culture:'Culture',entertainment:'Entertainment',sports:'Sports',society:'Society'},
+  en:{politics:'Politics',economy:'Business',tech:'Tech',world:'World',culture:'Culture',entertainment:'Entertainment',sports:'Sports',society:'Society'},
+  jp:{politics:'政治',economy:'経済',tech:'テクノロジー',world:'国際',culture:'文化',entertainment:'エンタメ',sports:'スポーツ',society:'社会'},
+};
+
+let country = 'kr';
+let rawItems = [];
+let selCats = new Set();
+let selSrc = new Set();
+let sortMode = 'score';
+let boostKws = [];
+let muteKws = [];
+let tickerOffset = 0;
+let tickerLast = null;
+let tickerRAF = null;
+let tickerSpeed = 60;
+let tickerPaused = false;
+
+function getWeights() {
+  return {
+    recency: Number(document.getElementById('v1').textContent) || 0,
+    clusterBonus: Number(document.getElementById('v2').textContent) || 0,
+    breakingBonus: Number(document.getElementById('v3').textContent) || 0,
+    keywordBoost: Number(document.getElementById('v4').textContent) || 0,
+  };
+}
+
+// ── 클러스터링 & 점수 (서버 로직과 동일하게 미리보기) ──────────
+function tokenize(title) {
+  return title.toLowerCase()
+    .replace(/[""''·…,.?!()[\]{}<>:;\-–—~`]/g, " ")
+    .split(/\s+/)
+    .filter(t => t.length >= 2);
+}
+function jaccard(a, b) {
+  if (!a.size || !b.size) return 0;
+  let inter = 0;
+  for (const t of a) if (b.has(t)) inter++;
+  return inter / (a.size + b.size - inter);
+}
+function clusterArticles(items) {
+  const clusters = [];
+  for (const item of items) {
+    const tokens = new Set(tokenize(item.title));
+    let best = null, bestSim = 0;
+    for (const cluster of clusters) {
+      const sim = jaccard(tokens, cluster.tokens);
+      if (sim > bestSim) { bestSim = sim; best = cluster; }
+    }
+    if (best && bestSim >= CLUSTER_THRESHOLD) {
+      best.items.push(item);
+      for (const t of tokens) best.tokens.add(t);
+    } else {
+      clusters.push({ tokens, items: [item] });
+    }
+  }
+  return clusters.map(c => c.items);
+}
+function scoreCluster(items, weights) {
+  const now = Date.now();
+  const latest = Math.max(...items.map(i => i.publishedAt));
+  const ageHours = (now - latest) / (1000 * 60 * 60);
+  const recency = Math.max(0, 100 - ageHours * 4) * (weights.recency / 100);
+  const sourceCount = new Set(items.map(i => i.domain)).size;
+  const clusterBonus = Math.min(40, (sourceCount - 1) * 15) * (weights.clusterBonus / 100);
+  const breaking = items.some(i => i.breaking);
+  const breakingBonus = breaking ? weights.breakingBonus * 0.3 : 0;
+  const boosted = boostKws.length > 0 && items.some(i => boostKws.some(k => i.title.toLowerCase().includes(k.toLowerCase())));
+  const keywordBoost = boosted ? weights.keywordBoost * 0.3 : 0;
+  return { score: Math.round(recency + clusterBonus + breakingBonus + keywordBoost), sourceCount, boosted, breaking };
+}
+function buildClusters(items) {
+  const muted = muteKws.length ? items.filter(a => !muteKws.some(k => a.title.toLowerCase().includes(k.toLowerCase()))) : items;
+  const weights = getWeights();
+  const clusters = clusterArticles(muted);
+  return clusters.map(items => {
+    const sorted = [...items].sort((a,b) => a.publishedAt - b.publishedAt);
+    const primary = sorted[0];
+    const { score, sourceCount, boosted, breaking } = scoreCluster(items, weights);
+    return { ...primary, sourceCount, boosted, score, breaking };
+  });
+}
+
+// ── 하단 플로팅 티커: 아이템 렌더링 & 애니메이션 ──────────────
+// content.js의 renderTickerItem과 동일한 구조/클래스를 사용 (나중에 그대로 포팅)
+function renderTickerItem(article) {
+  const item = document.createElement('a');
+  item.className = 'ticker-item';
+  item.href = article.link;
+  item.target = '_blank';
+  item.rel = 'noopener noreferrer';
+
+  const source = document.createElement('span');
+  source.className = 'ticker-source';
+  const sourceName = document.createElement('span');
+  sourceName.className = 'ticker-source-name';
+  sourceName.textContent = article.domain;
+  source.appendChild(sourceName);
+
+  if (article.sourceCount > 1) {
+    const cluster = document.createElement('span');
+    cluster.className = 'ticker-cluster';
+    cluster.textContent = `+${article.sourceCount - 1}`;
+    source.appendChild(cluster);
+  }
+  item.appendChild(source);
+
+  if (article.category) {
+    const labels = CAT_LABELS[country] || CAT_LABELS.kr;
+    const cat = document.createElement('span');
+    cat.className = `ticker-cat cat-${article.category}`;
+    cat.textContent = labels[article.category] || article.category;
+    item.appendChild(cat);
+  }
+
+  const articleEl = document.createElement('span');
+  articleEl.className = 'ticker-article';
+  if (article.breaking) {
+    const dot = document.createElement('span');
+    dot.className = 'ticker-dot';
+    articleEl.appendChild(dot);
+  }
+  const title = document.createElement('span');
+  title.className = 'ticker-title';
+  title.textContent = article.title;
+  articleEl.appendChild(title);
+  item.appendChild(articleEl);
+
+  return item;
+}
+
+function startFloatTicker(items) {
+  const inner = document.getElementById('tickerFloatInner');
+  if (!items.length) return;
+  const top = items.slice(0, 25);
+  inner.innerHTML = '';
+  const fragment = () => {
+    const frag = document.createDocumentFragment();
+    top.forEach(a => frag.appendChild(renderTickerItem(a)));
+    return frag;
+  };
+  inner.appendChild(fragment());
+  inner.appendChild(fragment());
+
+  if (tickerRAF) cancelAnimationFrame(tickerRAF);
+  tickerOffset = 0;
+  tickerLast = null;
+
+  function tick(ts) {
+    if (!tickerLast) tickerLast = ts;
+    const dt = ts - tickerLast;
+    tickerLast = ts;
+    if (!tickerPaused) {
+      tickerOffset += tickerSpeed * dt / 1000;
+      const half = inner.scrollWidth / 2;
+      if (half > 0) tickerOffset = tickerOffset % half;
+      inner.style.transform = `translateX(-${tickerOffset}px)`;
+    }
+    tickerRAF = requestAnimationFrame(tick);
+  }
+  tickerRAF = requestAnimationFrame(tick);
+}
+
+function toggleTickerPause() {
+  tickerPaused = !tickerPaused;
+  document.getElementById('tickerPauseBtn').textContent = tickerPaused ? '▶' : '⏸';
+}
+
+// ── 티커 튜닝: 슬라이더 값 → CSS 변수 (나중에 NEWS/ticker.css로 그대로 포팅) ──
+function val(id) { return document.getElementById(id).value; }
+
+function tickerValUpdate(inputId, valId, suffix) {
+  document.getElementById(valId).textContent = val(inputId) + suffix;
+}
+
+const TICKER_TUNING_KEY = 'newsTickerTuning';
+const TICKER_INPUT_IDS = ['tBottom','tSide','tMaxWidth','tHeight','tRadius','tBgAlpha','tBlur','tSpeed','tFontSize','tItemGap','tCatFontSize'];
+
+function applyTickerVars() {
+  const root = document.documentElement.style;
+  root.setProperty('--ticker-bottom', val('tBottom') + 'px');
+  root.setProperty('--ticker-side', val('tSide') + 'px');
+  root.setProperty('--ticker-max-width', val('tMaxWidth') + 'px');
+  root.setProperty('--ticker-height', val('tHeight') + 'px');
+  root.setProperty('--ticker-radius', val('tRadius') + 'px');
+  root.setProperty('--ticker-bg-alpha', val('tBgAlpha') / 100);
+  root.setProperty('--ticker-blur', val('tBlur') + 'px');
+  root.setProperty('--ticker-speed', val('tSpeed'));
+  root.setProperty('--ticker-font-size', val('tFontSize') + 'px');
+  root.setProperty('--ticker-item-gap', val('tItemGap') + 'px');
+  root.setProperty('--ticker-cat-font-size', val('tCatFontSize') + 'px');
+
+  document.getElementById('tickerFloat').classList.toggle('full-width', document.getElementById('tFullWidth').checked);
+
+  tickerSpeed = Number(val('tSpeed')) || 60;
+
+  const clearance = Number(val('tHeight')) + Number(val('tBottom')) + 16;
+  document.getElementById('articleList').style.paddingBottom = clearance + 'px';
+
+  saveTickerTuningLocal();
+}
+
+function saveTickerTuningLocal() {
+  const cfg = { fullWidth: document.getElementById('tFullWidth').checked };
+  TICKER_INPUT_IDS.forEach(id => { cfg[id] = val(id); });
+  localStorage.setItem(TICKER_TUNING_KEY, JSON.stringify(cfg));
+}
+
+function loadTickerTuningLocal() {
+  try {
+    const raw = localStorage.getItem(TICKER_TUNING_KEY);
+    if (!raw) return;
+    const cfg = JSON.parse(raw);
+    TICKER_INPUT_IDS.forEach(id => {
+      if (cfg[id] == null) return;
+      document.getElementById(id).value = cfg[id];
+    });
+    if (cfg.fullWidth != null) document.getElementById('tFullWidth').checked = cfg.fullWidth;
+    tickerValUpdate('tBottom','tBottomV','px');
+    tickerValUpdate('tSide','tSideV','px');
+    tickerValUpdate('tMaxWidth','tMaxWidthV','px');
+    tickerValUpdate('tHeight','tHeightV','px');
+    tickerValUpdate('tRadius','tRadiusV','px');
+    tickerValUpdate('tBgAlpha','tBgAlphaV','%');
+    tickerValUpdate('tBlur','tBlurV','px');
+    tickerValUpdate('tSpeed','tSpeedV','');
+    tickerValUpdate('tFontSize','tFontSizeV','px');
+    tickerValUpdate('tItemGap','tItemGapV','px');
+    tickerValUpdate('tCatFontSize','tCatFontSizeV','px');
+  } catch (e) {
+    console.warn('티커 튜닝 로드 실패', e.message);
+  }
+}
+
+function copyTickerCSS() {
+  const fullWidth = document.getElementById('tFullWidth').checked;
+  const css = `:root {\n  --ticker-height: ${val('tHeight')}px;\n  --ticker-speed: ${val('tSpeed')};\n  --ticker-font-size: ${val('tFontSize')}px;\n  --ticker-item-gap: ${val('tItemGap')}px;\n  --ticker-cat-font-size: ${val('tCatFontSize')}px;\n  --ticker-radius: ${val('tRadius')}px;\n  --ticker-bottom: ${val('tBottom')}px;\n  --ticker-side: ${val('tSide')}px;\n  --ticker-max-width: ${fullWidth ? 'none' : val('tMaxWidth') + 'px'};\n  --ticker-bg-alpha: ${(val('tBgAlpha') / 100).toFixed(2)};\n  --ticker-blur: ${val('tBlur')}px;\n}`;
+  navigator.clipboard.writeText(css).then(() => {
+    const el = document.getElementById('tickerSaveStatus');
+    el.textContent = 'CSS 복사 완료!';
+    el.className = 'save-status ok';
+    setTimeout(() => { el.textContent = '변경 시 이 브라우저에 자동 저장됨'; el.className = 'save-status'; }, 2000);
+  });
+}
+
+// ── 데이터 로드 ──────────────────────────────
+async function loadData() {
+  document.getElementById('loadingBar').classList.add('show');
+  try {
+    const res = await fetch(`${WORKER_URL}/?pack=${country}&raw=1`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    rawItems = Array.isArray(data.items) ? data.items : [];
+
+    if (data.updatedAt) {
+      const d = new Date(data.updatedAt);
+      document.getElementById('updatedAt').textContent =
+        `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+    }
+
+    document.getElementById('totalCnt').textContent = rawItems.length;
+    selCats = new Set();
+    selSrc = new Set();
+    renderSidebar();
+    rerender();
+  } catch(e) {
+    document.getElementById('articleList').innerHTML =
+      `<div class="empty-state error-state">오류: ${e.message}</div>`;
+  } finally {
+    document.getElementById('loadingBar').classList.remove('show');
+  }
+}
+
+async function loadConfig() {
+  try {
+    const res = await fetch(`${WORKER_URL}/admin/config`);
+    if (!res.ok) return;
+    const cfg = await res.json();
+    const w = cfg.weights || {};
+    if (w.recency != null) { document.getElementById('v1').value = w.recency; document.getElementById('v1').textContent = w.recency; }
+    if (w.clusterBonus != null) { document.getElementById('v2').value = w.clusterBonus; document.getElementById('v2').textContent = w.clusterBonus; }
+    if (w.breakingBonus != null) { document.getElementById('v3').value = w.breakingBonus; document.getElementById('v3').textContent = w.breakingBonus; }
+    if (w.keywordBoost != null) { document.getElementById('v4').value = w.keywordBoost; document.getElementById('v4').textContent = w.keywordBoost; }
+    boostKws = Array.isArray(cfg.boostKeywords) ? cfg.boostKeywords : [];
+    muteKws = Array.isArray(cfg.muteKeywords) ? cfg.muteKeywords : [];
+    renderKwTags();
+  } catch(e) {
+    console.warn('설정 로드 실패', e.message);
+  }
+}
+
+async function saveConfig() {
+  const statusEl = document.getElementById('saveStatus');
+  statusEl.textContent = '저장 중...';
+  statusEl.className = 'save-status';
+  try {
+    const res = await fetch(`${WORKER_URL}/admin/config`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ weights: getWeights(), boostKeywords: boostKws, muteKeywords: muteKws }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    statusEl.textContent = '저장 완료! 서버에 반영됨';
+    statusEl.className = 'save-status ok';
+  } catch(e) {
+    statusEl.textContent = `저장 실패: ${e.message}`;
+    statusEl.className = 'save-status err';
+  }
+  setTimeout(() => { statusEl.textContent = ''; statusEl.className = 'save-status'; }, 4000);
+}
+
+function renderSidebar() {
+  // 카테고리
+  const catEl = document.getElementById('catList');
+  catEl.innerHTML = '';
+  const labels = CAT_LABELS[country] || CAT_LABELS.kr;
+
+  const allItem = document.createElement('div');
+  allItem.className = 'cat-item' + (selCats.size === 0 ? ' active' : '');
+  allItem.innerHTML = `<div class="cat-left"><div class="cat-dot" style="background:rgba(255,255,255,0.22)"></div><span class="cat-name">전체</span></div><span class="cat-cnt">${rawItems.length}</span>`;
+  allItem.onclick = () => { selCats = new Set(); renderSidebar(); rerender(); };
+  catEl.appendChild(allItem);
+
+  const catCounts = {};
+  rawItems.forEach(a => { catCounts[a.category] = (catCounts[a.category] || 0) + 1; });
+
+  Object.keys(catCounts).sort((a,b) => catCounts[b] - catCounts[a]).forEach(catId => {
+    const color = CAT_COLORS[catId] || { c: 'rgba(255,255,255,0.6)', b: 'rgba(255,255,255,0.25)' };
+    const isActive = selCats.has(catId);
+    const item = document.createElement('div');
+    item.className = 'cat-item' + (isActive ? ' active' : '');
+    item.innerHTML = `<div class="cat-left"><div class="cat-dot" style="background:${color.c}"></div><span class="cat-name">${labels[catId] || catId}</span></div><span class="cat-cnt">${catCounts[catId]}</span>`;
+    item.onclick = () => {
+      if (selCats.has(catId)) selCats.delete(catId); else selCats.add(catId);
+      renderSidebar(); rerender();
+    };
+    catEl.appendChild(item);
+  });
+
+  // 언론사
+  const sources = [...new Set(rawItems.map(a => a.domain))].filter(Boolean);
+  document.getElementById('srcCnt').textContent = sources.length;
+  const srcEl = document.getElementById('sourceList');
+  srcEl.innerHTML = '';
+  sources.forEach(s => {
+    const cnt = rawItems.filter(a => a.domain === s).length;
+    const isActive = selSrc.has(s);
+    const item = document.createElement('div');
+    item.className = 'source-item' + (isActive ? ' active' : '');
+    item.innerHTML = `<div class="src-cb">${isActive ? '✓' : ''}</div><span class="src-name">${s}</span><span class="src-cnt">${cnt}</span>`;
+    item.onclick = () => {
+      if (selSrc.has(s)) selSrc.delete(s); else selSrc.add(s);
+      renderSidebar(); rerender();
+    };
+    srcEl.appendChild(item);
+  });
+}
+
+function rerender() {
+  let items = [...rawItems];
+  if (selCats.size > 0) items = items.filter(a => selCats.has(a.category));
+  if (selSrc.size > 0) items = items.filter(a => selSrc.has(a.domain));
+
+  let clusters = buildClusters(items);
+
+  if (sortMode === 'score') clusters.sort((a, b) => b.score - a.score);
+  else if (sortMode === 'time') clusters.sort((a, b) => (b.publishedAt || 0) - (a.publishedAt || 0));
+  else clusters.sort((a, b) => (a.domain || '').localeCompare(b.domain || ''));
+
+  document.getElementById('resultCnt').textContent = `${clusters.length}건`;
+  document.getElementById('showCnt').textContent = clusters.length;
+
+  startFloatTicker([...clusters].sort((a,b) => b.score - a.score));
+
+  const list = document.getElementById('articleList');
+  list.innerHTML = '';
+
+  if (!clusters.length) {
+    list.innerHTML = '<div class="empty-state">표시할 기사가 없습니다</div>';
+    return;
+  }
+
+  const labels = CAT_LABELS[country] || CAT_LABELS.kr;
+
+  clusters.forEach((a, i) => {
+    const color = CAT_COLORS[a.category] || { c: 'rgba(255,255,255,0.6)', b: 'rgba(255,255,255,0.25)' };
+    const item = document.createElement('div');
+    item.className = 'article-item';
+
+    const timeStr = a.publishedAt
+      ? new Date(a.publishedAt).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'})
+      : '';
+
+    item.innerHTML = `
+      <div class="rank">${i + 1}</div>
+      <div>
+        <div class="article-meta">
+          <span class="article-source">${a.domain}${a.sourceCount > 1 ? ` 외 ${a.sourceCount - 1}곳` : ''}</span>
+          <span class="cat-badge" style="color:${color.c};border-color:${color.b};background:${color.b}">${labels[a.category] || a.category}</span>
+          ${a.breaking ? '<span class="cat-badge" style="color:rgba(239,68,68,0.9);border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.08)">속보</span>' : ''}
+          ${a.boosted ? '<span class="cat-badge" style="color:rgba(16,185,129,0.9);border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.08)">부스트</span>' : ''}
+        </div>
+        <div class="article-title">${a.title}</div>
+      </div>
+      <div class="score-col">
+        <div class="score-num">+${a.score}</div>
+        <div class="article-time">${timeStr}</div>
+      </div>`;
+
+    item.onclick = () => window.open(a.link, '_blank');
+    list.appendChild(item);
+  });
+}
+
+function setCountry(el, c) {
+  document.querySelectorAll('.ctab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  country = c;
+  loadData();
+}
+
+function setSort(el, mode) {
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  sortMode = mode;
+  rerender();
+}
+
+function addKw(type) {
+  const id = type === 'boost' ? 'boostInput' : 'muteInput';
+  const val = document.getElementById(id).value.trim();
+  if (!val) return;
+  if (type === 'boost' && !boostKws.includes(val)) boostKws.push(val);
+  if (type === 'mute' && !muteKws.includes(val)) muteKws.push(val);
+  document.getElementById(id).value = '';
+  renderKwTags(); rerender();
+}
+
+function removeKw(type, kw) {
+  if (type === 'boost') boostKws = boostKws.filter(k => k !== kw);
+  else muteKws = muteKws.filter(k => k !== kw);
+  renderKwTags(); rerender();
+}
+
+function renderKwTags() {
+  ['boost', 'mute'].forEach(type => {
+    const arr = type === 'boost' ? boostKws : muteKws;
+    const el = document.getElementById(type + 'Tags');
+    el.innerHTML = '';
+    arr.forEach(k => {
+      const t = document.createElement('div');
+      t.className = 'kw-tag kw-' + type;
+      t.innerHTML = `${k}<span class="kw-remove" onclick="removeKw('${type}','${k}')">×</span>`;
+      el.appendChild(t);
+    });
+  });
+}
+
+document.getElementById('boostInput').onkeydown = e => { if (e.key === 'Enter') addKw('boost'); };
+document.getElementById('muteInput').onkeydown = e => { if (e.key === 'Enter') addKw('mute'); };
+
+// ── 초기 로드: 저장된 설정부터 불러온 뒤 기사 로드 ──────────
+loadTickerTuningLocal();
+applyTickerVars();
+
+(async () => {
+  await loadConfig();
+  await loadData();
+})();
+</script>
+</body>
+</html>

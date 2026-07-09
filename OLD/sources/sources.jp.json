@@ -1,0 +1,202 @@
+{
+  "pack_id": "jp",
+  "meta": {
+    "locale": "ja-JP",
+    "generated_at": "2025-01-01",
+    "policy": {
+      "trusted_channels_only": true,
+      "tone_filter_enabled": false
+    }
+  },
+  "tabs": [
+    {
+      "id": "world",
+      "label": "国際",
+      "categories": [
+        {
+          "id": "world",
+          "label": "国際",
+          "sources": [
+            {
+              "source_id": "nhk",
+              "feed_key": "world"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "politics",
+      "label": "政治",
+      "categories": [
+        {
+          "id": "politics",
+          "label": "政治",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "id": "economy",
+      "label": "経済",
+      "categories": [
+        {
+          "id": "economy",
+          "label": "経済",
+          "sources": [
+            {
+              "source_id": "nhk",
+              "feed_key": "business"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "society",
+      "label": "社会/ローカル",
+      "categories": [
+        {
+          "id": "society",
+          "label": "社会/ローカル",
+          "sources": [
+            {
+              "source_id": "nhk",
+              "feed_key": "domestic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tech",
+      "label": "技術/科学",
+      "categories": [
+        {
+          "id": "tech",
+          "label": "技術/科学",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "id": "culture",
+      "label": "文化/ライフ",
+      "categories": [
+        {
+          "id": "culture",
+          "label": "文化/ライフ",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "id": "sports",
+      "label": "スポーツ",
+      "categories": [
+        {
+          "id": "sports",
+          "label": "スポーツ",
+          "sources": [
+            {
+              "source_id": "nhk",
+              "feed_key": "sports"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "nhk",
+      "name_en": "NHK News",
+      "type": "broadcast_news",
+      "homepage": "https://www3.nhk.or.jp/news/",
+      "feeds": {
+        "top": "https://www3.nhk.or.jp/rss/news/cat0.xml",
+        "domestic": "https://www3.nhk.or.jp/rss/news/cat1.xml",
+        "world": "https://www3.nhk.or.jp/rss/news/cat2.xml",
+        "business": "https://www3.nhk.or.jp/rss/news/cat3.xml",
+        "sports": "https://www3.nhk.or.jp/rss/news/cat7.xml"
+      }
+    }
+  ],
+  "ui": {
+    "appName": "ニュースティッカー",
+    "brand": "JP NEWS",
+    "loading": "ヘッドラインを読み込み中…",
+    "scoreTitle": "スコア順表示（テスト）",
+    "scoreHint": "{brand} をクリック → スコア順（最大 {max} 件）",
+    "close": "閉じる",
+    "empty": "表示する記事がありません。",
+    "breakingTag": "[速報]",
+    "breakingLabel": "速報",
+    "sectionCountry": "国",
+    "sectionTickerPosition": "ティッカー位置",
+    "toggleDockBottom": "画面下に固定",
+    "toggleHideOnScroll": "スクロールで非表示",
+    "sectionHiddenSites": "非表示サイト",
+    "hideSite": "このサイトを非表示",
+    "unhideSite": "非表示を解除",
+    "unhideButton": "解除",
+    "refresh": "更新",
+    "devSection": "DEV",
+    "devLogs": "デバッグログ",
+    "reloadSources": "ソースパック再読み込み",
+    "devHint": "ソースパック変更後、保存データ削除なしで反映されます。",
+    "sourcesHint": "<code>sources/sources.&lt;pack&gt;.json</code> を置き換えると国/言語を拡張できます。",
+    "noHiddenSites": "なし",
+    "metroSection": "US メトロ",
+    "metroEnabled": "メトロを有効化",
+    "statusLastUpdated": "最終更新: {time}",
+    "statusCurrentHost": "現在: {host}",
+    "metroToggle": "リストを開閉"
+  },
+  "stopwords": [
+    "の",
+    "に",
+    "は",
+    "を",
+    "が",
+    "で",
+    "と",
+    "へ",
+    "も",
+    "や",
+    "から",
+    "まで",
+    "より",
+    "など",
+    "こと",
+    "もの",
+    "これ",
+    "それ",
+    "あれ",
+    "ここ",
+    "そこ",
+    "あそこ",
+    "そして",
+    "しかし",
+    "また",
+    "ため",
+    "なる",
+    "する",
+    "した",
+    "して",
+    "いる",
+    "ある",
+    "ない",
+    "速報",
+    "緊急"
+  ],
+  "category_labels": {
+    "politics": "政治",
+    "economy": "経済",
+    "society": "社会/ローカル",
+    "world": "国際",
+    "tech": "技術/科学",
+    "culture": "文化/ライフ",
+    "sports": "スポーツ"
+  }
+}

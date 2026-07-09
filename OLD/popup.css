@@ -1,0 +1,326 @@
+:root {
+  --bg: #0b0b0f;
+  --fg: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.65);
+  --line: rgba(255, 255, 255, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  width: 320px;
+}
+
+.wrap {
+  padding: 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.title {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.muted {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btn {
+  flex: 1 1 auto;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--fg);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.btnGhost {
+  flex: 0 0 auto;
+  width: 90px;
+}
+
+.select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--fg);
+  font-size: 12px;
+}
+
+.select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.section {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.sectionTitle {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.list {
+  display: grid;
+  gap: 6px;
+}
+
+.metroList {
+  display: grid;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.metroHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.metroControls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.metroCheckbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+}
+
+.metroCheckbox input {
+  width: 14px;
+  height: 14px;
+}
+
+.metroBody {
+  margin-top: 6px;
+  display: grid;
+  gap: 8px;
+}
+
+.metroBody.collapsed {
+  display: none;
+}
+
+.accordionToggle {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--fg);
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.accordionToggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.accordionIcon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.accordionToggle.expanded .accordionIcon {
+  transform: rotate(180deg);
+}
+
+.metroItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.metroItem input {
+  width: 14px;
+  height: 14px;
+}
+
+.metroItem.disabled {
+  opacity: 0.5;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 12px;
+}
+
+.item button {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  border-radius: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.item button:hover {
+  color: var(--fg);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+    .cnt {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.08);
+      opacity: 0.95;
+      margin-left: 6px;
+      line-height: 1;
+      user-select: none;
+      transform: translateY(-0.5px);
+    }
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+    .impDot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #ef4444; /* 빨강 */
+      display: inline-block;
+      margin: 0 6px 0 10px;
+      transform: translateY(-1px);
+      flex: 0 0 auto;
+    }
+
+
+/* Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  border: 1px solid var(--line);
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.08);
+  transition: 0.2s;
+  border-radius: 999px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  top: 2px;
+  background: rgba(255, 255, 255, 0.85);
+  transition: 0.2s;
+  border-radius: 999px;
+}
+
+input:checked + .slider {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+
+/* DEV */
+.devRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.devToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  user-select: none;
+}
+
+.devToggle input {
+  width: 14px;
+  height: 14px;
+}
+
+.devHint {
+  margin-top: 8px;
+}

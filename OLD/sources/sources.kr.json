@@ -1,0 +1,520 @@
+{
+  "pack_id": "kr",
+  "meta": {
+    "locale": "ko-KR",
+    "generated_at": "2025-12-31",
+    "policy": {
+      "trusted_channels_only": true,
+      "tone_filter_enabled": false
+    }
+  },
+  "tabs": [
+    {
+      "id": "politics",
+      "label": "정치",
+      "categories": [
+        {
+          "id": "politics",
+          "label": "정치",
+          "sources": [
+            {
+              "source_id": "yonhapnewstv",
+              "feed_key": "politics"
+            },
+            {
+              "source_id": "mk",
+              "feed_key": "politics"
+            },
+            {
+              "source_id": "hankyung",
+              "feed_key": "politics"
+            },
+            {
+              "source_id": "donga",
+              "feed_key": "politics"
+            },
+            {
+              "source_id": "khan",
+              "feed_key": "politics"
+            },
+            {
+              "source_id": "chosun",
+              "feed_key": "politics"
+            },
+            {
+              "source_id": "hani",
+              "feed_key": "politics"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "economy",
+      "label": "경제/비즈",
+      "categories": [
+        {
+          "id": "economy",
+          "label": "경제/비즈",
+          "sources": [
+            {
+              "source_id": "yonhapnewstv",
+              "feed_key": "economy"
+            },
+            {
+              "source_id": "mk",
+              "feed_key": "economy"
+            },
+            {
+              "source_id": "hankyung",
+              "feed_key": "economy"
+            },
+            {
+              "source_id": "donga",
+              "feed_key": "economy"
+            },
+            {
+              "source_id": "khan",
+              "feed_key": "economy"
+            },
+            {
+              "source_id": "chosun",
+              "feed_key": "economy"
+            },
+            {
+              "source_id": "hani",
+              "feed_key": "economy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "society",
+      "label": "사회/로컬",
+      "categories": [
+        {
+          "id": "society",
+          "label": "사회/로컬",
+          "sources": [
+            {
+              "source_id": "yonhapnewstv",
+              "feed_key": "society"
+            },
+            {
+              "source_id": "mk",
+              "feed_key": "society"
+            },
+            {
+              "source_id": "hankyung",
+              "feed_key": "society"
+            },
+            {
+              "source_id": "donga",
+              "feed_key": "society"
+            },
+            {
+              "source_id": "khan",
+              "feed_key": "society"
+            },
+            {
+              "source_id": "chosun",
+              "feed_key": "national"
+            },
+            {
+              "source_id": "hani",
+              "feed_key": "society"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tech",
+      "label": "기술/과학",
+      "categories": [
+        {
+          "id": "tech",
+          "label": "기술/과학",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "id": "world",
+      "label": "국제",
+      "categories": [
+        {
+          "id": "world",
+          "label": "국제",
+          "sources": [
+            {
+              "source_id": "yonhapnewstv",
+              "feed_key": "international"
+            },
+            {
+              "source_id": "mk",
+              "feed_key": "international"
+            },
+            {
+              "source_id": "hankyung",
+              "feed_key": "international"
+            },
+            {
+              "source_id": "donga",
+              "feed_key": "international"
+            },
+            {
+              "source_id": "khan",
+              "feed_key": "world"
+            },
+            {
+              "source_id": "chosun",
+              "feed_key": "international"
+            },
+            {
+              "source_id": "hani",
+              "feed_key": "international"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "culture",
+      "label": "문화/라이프/연예",
+      "categories": [
+        {
+          "id": "culture",
+          "label": "문화/라이프/연예",
+          "sources": [
+            {
+              "source_id": "yonhapnewstv",
+              "feed_key": "culture"
+            },
+            {
+              "source_id": "mk",
+              "feed_key": "culture_ent"
+            },
+            {
+              "source_id": "hankyung",
+              "feed_key": "life"
+            },
+            {
+              "source_id": "donga",
+              "feed_key": "culture"
+            },
+            {
+              "source_id": "khan",
+              "feed_key": "culture"
+            },
+            {
+              "source_id": "chosun",
+              "feed_key": "culture_life"
+            },
+            {
+              "source_id": "hani",
+              "feed_key": "culture"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sports",
+      "label": "스포츠",
+      "categories": [
+        {
+          "id": "sports",
+          "label": "스포츠",
+          "sources": [
+            {
+              "source_id": "yonhapnewstv",
+              "feed_key": "sports"
+            },
+            {
+              "source_id": "mk",
+              "feed_key": "sports"
+            },
+            {
+              "source_id": "hankyung",
+              "feed_key": "sports"
+            },
+            {
+              "source_id": "donga",
+              "feed_key": "sports"
+            },
+            {
+              "source_id": "khan",
+              "feed_key": "sports"
+            },
+            {
+              "source_id": "chosun",
+              "feed_key": "sports"
+            },
+            {
+              "source_id": "hani",
+              "feed_key": "sports"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "yonhapnewstv",
+      "name_ko": "연합뉴스TV",
+      "type": "broadcast_news",
+      "homepage": "https://www.yonhapnewstv.co.kr/",
+      "feeds": {
+        "latest": "http://www.yonhapnewstv.co.kr/browse/feed/",
+        "politics": "http://www.yonhapnewstv.co.kr/category/news/politics/feed/",
+        "economy": "http://www.yonhapnewstv.co.kr/category/news/economy/feed/",
+        "society": "http://www.yonhapnewstv.co.kr/category/news/society/feed/",
+        "local": "http://www.yonhapnewstv.co.kr/category/news/local/feed/",
+        "international": "http://www.yonhapnewstv.co.kr/category/news/international/feed/",
+        "culture": "http://www.yonhapnewstv.co.kr/category/news/culture/feed/",
+        "sports": "http://www.yonhapnewstv.co.kr/category/news/sports/feed/",
+        "weather": "http://www.yonhapnewstv.co.kr/category/news/weather/feed/"
+      }
+    },
+    {
+      "id": "mk",
+      "name_ko": "매일경제",
+      "type": "business_newspaper",
+      "homepage": "https://www.mk.co.kr/",
+      "feeds": {
+        "headline": "https://www.mk.co.kr/rss/30000001/",
+        "all": "https://www.mk.co.kr/rss/40300001/",
+        "economy": "https://www.mk.co.kr/rss/30100041/",
+        "politics": "https://www.mk.co.kr/rss/30200030/",
+        "society": "https://www.mk.co.kr/rss/50400012/",
+        "international": "https://www.mk.co.kr/rss/30300018/",
+        "business": "https://www.mk.co.kr/rss/50100032/",
+        "stocks": "https://www.mk.co.kr/rss/50200011/",
+        "realestate": "https://www.mk.co.kr/rss/50300009/",
+        "culture_ent": "https://www.mk.co.kr/rss/30000023/",
+        "sports": "https://www.mk.co.kr/rss/71000001/"
+      }
+    },
+    {
+      "id": "hankyung",
+      "name_ko": "한국경제",
+      "type": "business_newspaper",
+      "homepage": "https://www.hankyung.com/",
+      "feeds": {
+        "all": "https://www.hankyung.com/feed/all-news",
+        "finance": "https://www.hankyung.com/feed/finance",
+        "economy": "https://www.hankyung.com/feed/economy",
+        "realestate": "https://www.hankyung.com/feed/realestate",
+        "it": "https://www.hankyung.com/feed/it",
+        "politics": "https://www.hankyung.com/feed/politics",
+        "international": "https://www.hankyung.com/feed/international",
+        "society": "https://www.hankyung.com/feed/society",
+        "life": "https://www.hankyung.com/feed/life",
+        "sports": "https://www.hankyung.com/feed/sports",
+        "entertainment": "https://www.hankyung.com/feed/entertainment"
+      }
+    },
+    {
+      "id": "donga",
+      "name_ko": "동아일보",
+      "type": "newspaper",
+      "homepage": "https://www.donga.com/",
+      "feeds": {
+        "total": "https://rss.donga.com/total.xml",
+        "politics": "https://rss.donga.com/politics.xml",
+        "society": "https://rss.donga.com/national.xml",
+        "economy": "https://rss.donga.com/economy.xml",
+        "international": "https://rss.donga.com/international.xml",
+        "science": "https://rss.donga.com/science.xml",
+        "culture": "https://rss.donga.com/culture.xml",
+        "sports": "https://rss.donga.com/sports.xml"
+      }
+    },
+    {
+      "id": "khan",
+      "name_ko": "경향신문",
+      "type": "newspaper",
+      "homepage": "https://www.khan.co.kr/",
+      "feeds": {
+        "total": "https://www.khan.co.kr/rss/rssdata/total_news.xml",
+        "politics": "https://www.khan.co.kr/rss/rssdata/politic_news.xml",
+        "economy": "https://www.khan.co.kr/rss/rssdata/economy_news.xml",
+        "society": "https://www.khan.co.kr/rss/rssdata/society_news.xml",
+        "local": "https://www.khan.co.kr/rss/rssdata/local_news.xml",
+        "world": "https://www.khan.co.kr/rss/rssdata/kh_world.xml",
+        "culture": "https://www.khan.co.kr/rss/rssdata/culture_news.xml",
+        "sports": "http://www.khan.co.kr/rss/rssdata/kh_sports.xml",
+        "science_env": "https://www.khan.co.kr/rss/rssdata/science_news.xml"
+      }
+    },
+    {
+      "id": "chosun",
+      "name_ko": "조선일보",
+      "type": "newspaper",
+      "homepage": "https://www.chosun.com/",
+      "feeds": {
+        "all": "https://www.chosun.com/arc/outboundfeeds/rss/?outputType=xml",
+        "politics": "https://www.chosun.com/arc/outboundfeeds/rss/category/politics/?outputType=xml",
+        "economy": "https://www.chosun.com/arc/outboundfeeds/rss/category/economy/?outputType=xml",
+        "national": "https://www.chosun.com/arc/outboundfeeds/rss/category/national/?outputType=xml",
+        "international": "https://www.chosun.com/arc/outboundfeeds/rss/category/international/?outputType=xml",
+        "culture_life": "https://www.chosun.com/arc/outboundfeeds/rss/category/culture-life/?outputType=xml",
+        "sports": "https://www.chosun.com/arc/outboundfeeds/rss/category/sports/?outputType=xml",
+        "entertainment": "https://www.chosun.com/arc/outboundfeeds/rss/category/entertainments/?outputType=xml"
+      }
+    },
+    {
+      "id": "hani",
+      "name_ko": "한겨레",
+      "type": "newspaper",
+      "homepage": "https://www.hani.co.kr/",
+      "feeds": {
+        "all": "https://www.hani.co.kr/rss/",
+        "lead": "https://www.hani.co.kr/rss/lead/",
+        "politics": "https://www.hani.co.kr/rss/politics/",
+        "economy": "https://www.hani.co.kr/rss/economy/",
+        "society": "https://www.hani.co.kr/rss/society/",
+        "international": "https://www.hani.co.kr/rss/international/",
+        "culture": "https://www.hani.co.kr/rss/culture/",
+        "sports": "https://www.hani.co.kr/rss/sports/",
+        "science": "https://www.hani.co.kr/rss/science/"
+      }
+    },
+    {
+      "id": "sbs",
+      "name_ko": "SBS 뉴스",
+      "type": "broadcast_news",
+      "homepage": "https://news.sbs.co.kr/",
+      "feeds": {
+        "newsflash": "https://news.sbs.co.kr/news/newsflashRssFeed.do?plink=RSSREADER",
+        "rss_index": "https://news.sbs.co.kr/news/rss.do"
+      }
+    },
+    {
+      "id": "mbc",
+      "name_ko": "MBC 뉴스",
+      "type": "broadcast_news",
+      "homepage": "https://imnews.imbc.com/",
+      "feeds": {
+        "narrative": "https://imnews.imbc.com/rss/google_news/narrativeNews.rss"
+      }
+    }
+  ],
+  "ui": {
+    "appName": "KR News Ticker",
+    "brand": "KR NEWS",
+    "loading": "헤드라인을 불러오는 중…",
+    "scoreTitle": "점수순 노출(테스트 뷰)",
+    "scoreHint": "{brand} 클릭 → 점수순 정렬(최대 {max})",
+    "close": "닫기",
+    "empty": "표시할 기사가 없습니다.",
+    "breakingTag": "[속보]",
+    "breakingLabel": "속보",
+    "sectionCountry": "국가",
+    "sectionTickerPosition": "티커 위치",
+    "toggleDockBottom": "화면 하단에 붙이기",
+    "toggleHideOnScroll": "스크롤 시 숨기기",
+    "sectionHiddenSites": "숨긴 사이트",
+    "hideSite": "이 사이트 숨기기",
+    "unhideSite": "이 사이트 숨김 해제",
+    "unhideButton": "해제",
+    "refresh": "새로고침",
+    "devSection": "DEV",
+    "devLogs": "디버그 로그",
+    "reloadSources": "소스팩 리로드",
+    "devHint": "소스팩 변경 후, 저장소 지우기 없이 바로 반영합니다.",
+    "sourcesHint": "소스팩은 <code>sources/sources.&lt;pack&gt;.json</code>만 교체하면 국가/언어 확장 가능.",
+    "noHiddenSites": "없음",
+    "metroSection": "미국 메트로",
+    "metroEnabled": "메트로 활성",
+    "statusLastUpdated": "마지막 갱신: {time}",
+    "statusCurrentHost": "현재: {host}",
+    "metroToggle": "목록 펼치기/접기"
+  },
+  "stopwords": [
+    "한국",
+    "국내",
+    "정부",
+    "대통령",
+    "총리",
+    "국회",
+    "여야",
+    "오늘",
+    "내일",
+    "올해",
+    "내년",
+    "관련",
+    "논란",
+    "발표",
+    "확인",
+    "입장",
+    "속보",
+    "밝혔다",
+    "밝혔다고",
+    "말했다",
+    "말했다고",
+    "전했다",
+    "전했다고",
+    "설명했다",
+    "설명했다고",
+    "강조했다",
+    "강조했다고",
+    "주장했다",
+    "주장했다고",
+    "지적했다",
+    "지적했다고",
+    "반박했다",
+    "부인했다",
+    "확인됐다",
+    "드러났다",
+    "알려졌다",
+    "파악됐다",
+    "전해졌다",
+    "예고했다",
+    "전망했다",
+    "내다봤다",
+    "언급했다",
+    "한편",
+    "또",
+    "또한",
+    "다만",
+    "반면",
+    "특히",
+    "이에",
+    "따라서",
+    "그러나",
+    "그러면서",
+    "그러자",
+    "사실상",
+    "일부",
+    "대체로",
+    "전반적으로",
+    "이미",
+    "이날",
+    "오늘",
+    "어제",
+    "전날",
+    "최근",
+    "현재",
+    "앞서",
+    "이후",
+    "오는",
+    "향후",
+    "내달",
+    "이달",
+    "올해",
+    "내년"
+  ],
+  "category_labels": {
+    "politics": "정치",
+    "economy": "경제/비즈",
+    "society": "사회/로컬",
+    "world": "국제",
+    "tech": "기술/과학",
+    "culture": "문화/라이프/연예",
+    "sports": "스포츠"
+  }
+}

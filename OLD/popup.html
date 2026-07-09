@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="popup.css" />
+    <title>KR News Ticker</title>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="row">
+        <div class="title" id="appTitle">KR News Ticker</div>
+        <label class="switch">
+          <input id="toggleEnabled" type="checkbox" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="muted" id="statusLine">—</div>
+
+      <div class="section">
+        <div class="sectionTitle" id="sectionCountryTitle">국가</div>
+        <select id="selectCountry" class="select">
+          <option value="kr">KR (한국)</option>
+          <option value="us">US (United States)</option>
+          <option value="en">EN (English)</option>
+          <option value="jp">JP (Japan)</option>
+        </select>
+      </div>
+
+      <div class="section" id="usMetroSection" hidden>
+        <div class="metroHeader">
+          <div class="sectionTitle" id="metroSectionTitle">미국 메트로</div>
+          <div class="metroControls">
+            <label class="metroCheckbox" aria-label="Enable metro">
+              <input id="toggleUsMetroEnabled" type="checkbox" />
+            </label>
+            <button
+              id="toggleMetroAccordion"
+              class="accordionToggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="usMetroBody"
+              title="Toggle list"
+            >
+              <span class="accordionIcon" aria-hidden="true">▾</span>
+            </button>
+          </div>
+        </div>
+        <div id="usMetroBody" class="metroBody">
+          <div id="usMetroList" class="metroList"></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btnToggleSite" class="btn">이 사이트 숨기기</button>
+        <button id="btnRefresh" class="btn btnGhost">새로고침</button>
+      </div>
+
+      <div class="section">
+        <div class="sectionTitle" id="sectionTickerTitle">티커 위치</div>
+        <label class="devToggle">
+          <input id="toggleDockBottom" type="checkbox" />
+          <span id="toggleDockBottomLabel">화면 하단에 붙이기</span>
+        </label>
+        <label class="devToggle">
+          <input id="toggleHideOnScroll" type="checkbox" />
+          <span id="toggleHideOnScrollLabel">스크롤 시 숨기기</span>
+        </label>
+      </div>
+
+      <div class="section">
+        <div class="sectionTitle" id="sectionHiddenTitle">숨긴 사이트</div>
+        <div id="blacklist" class="list"></div>
+      </div>
+
+
+      <div class="section" id="devSection">
+        <div class="sectionTitle" id="devSectionTitle">DEV</div>
+        <div class="devRow">
+          <label class="devToggle">
+            <input id="toggleDevMode" type="checkbox" />
+            <span id="toggleDevModeLabel">디버그 로그</span>
+          </label>
+          <button id="btnReloadSources" class="btn btnGhost">소스팩 리로드</button>
+        </div>
+        <div class="muted devHint" id="devHint">
+          sources/sources.kr.json 변경 후, 저장소 지우기 없이 바로 반영합니다.
+        </div>
+      </div>
+
+      <div class="hint" id="sourcesHint">
+        소스팩은 <code>sources/sources.kr.json</code>만 교체하면 국가/언어 확장 가능.
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

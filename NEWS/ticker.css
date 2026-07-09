@@ -1,0 +1,202 @@
+/* ticker.css — 모든 스타일을 여기서 관리. content.js는 클래스명만 붙임.
+   튜닝 포인트는 :root 커스텀 프로퍼티로 분리되어 있음. */
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+:root {
+  --ticker-height: 44px;
+  --ticker-bg: #111;
+  --ticker-speed: 60; /* px/s, content.js가 읽어서 애니메이션 duration 계산에 사용 */
+  --ticker-font-size: 16px;
+  --ticker-font-weight-source: 600;
+  --ticker-font-weight-title: 500;
+  --ticker-gap: 8px;
+  --ticker-item-gap: 48px;
+  --ticker-cat-font-size: 13px;
+  --ticker-cat-bg-alpha: 0.18;
+}
+
+/* ── 컨테이너 ─────────────────────────────────────────── */
+
+#__news-ticker-root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--ticker-height);
+  z-index: 2147483647;
+  background: var(--ticker-bg);
+  color: #fff;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: var(--ticker-font-size);
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  user-select: none;
+  overflow: hidden;
+}
+
+#__news-ticker-root.ticker-hidden {
+  display: none;
+}
+
+#__news-ticker-label {
+  flex-shrink: 0;
+  padding: 0 10px;
+  background: #e00;
+  color: #fff;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+#__news-ticker-track {
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+  position: relative;
+}
+
+#__news-ticker-inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: var(--ticker-item-gap);
+  padding-left: var(--ticker-item-gap);
+  white-space: nowrap;
+  animation: newsTicker linear infinite;
+  animation-duration: var(--ticker-computed-duration, 30s);
+  will-change: transform;
+}
+
+#__news-ticker-inner.is-paused {
+  animation-play-state: paused;
+}
+
+#__news-ticker-controls {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 6px;
+  gap: 2px;
+  border-left: 1px solid #333;
+}
+
+#__news-ticker-controls button {
+  background: none !important;
+  border: none !important;
+  color: #aaa !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  padding: 2px 5px !important;
+  line-height: 1 !important;
+  border-radius: 3px !important;
+  transition: color 0.15s, background 0.15s !important;
+  box-shadow: none !important;
+  outline: none !important;
+  min-width: unset !important;
+  height: auto !important;
+}
+
+#__news-ticker-controls button:hover {
+  color: #fff !important;
+  background: #333 !important;
+}
+
+@keyframes newsTicker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── 티커 아이템 ──────────────────────────────────────── */
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ticker-gap);
+  flex-shrink: 0;
+  color: inherit;
+  text-decoration: none !important;
+}
+
+.ticker-item:hover .ticker-title {
+  color: #f9c74f;
+}
+
+.ticker-source {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ticker-source-name {
+  font-size: var(--ticker-font-size);
+  font-weight: var(--ticker-font-weight-source);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.ticker-cluster {
+  font-size: var(--ticker-font-size);
+  font-weight: var(--ticker-font-weight-source);
+  color: #fff;
+  opacity: 0.5;
+  white-space: nowrap;
+}
+
+.ticker-cat {
+  padding: 4px 8px;
+  border-radius: 99px;
+  font-size: var(--ticker-cat-font-size);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  background: rgba(var(--cat-r), var(--cat-g), var(--cat-b), var(--ticker-cat-bg-alpha));
+  color: rgb(var(--cat-r), var(--cat-g), var(--cat-b));
+}
+
+.ticker-article {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ticker-title {
+  font-size: var(--ticker-font-size);
+  font-weight: var(--ticker-font-weight-title);
+  color: #fff;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.ticker-dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: #f00;
+  box-shadow: 0 0 4px 2px rgba(255, 0, 0, 0.6);
+}
+
+/* ── 카테고리 배지 색상 ───────────────────────────────── */
+
+.cat-politics      { --cat-r: 239; --cat-g: 68;  --cat-b: 68;  }
+.cat-economy       { --cat-r: 16;  --cat-g: 185; --cat-b: 129; }
+.cat-society       { --cat-r: 59;  --cat-g: 130; --cat-b: 246; }
+.cat-world         { --cat-r: 168; --cat-g: 85;  --cat-b: 247; }
+.cat-culture       { --cat-r: 236; --cat-g: 72;  --cat-b: 153; }
+.cat-entertainment { --cat-r: 236; --cat-g: 72;  --cat-b: 153; }
+.cat-sports        { --cat-r: 245; --cat-g: 158; --cat-b: 11;  }
+.cat-tech          { --cat-r: 6;   --cat-g: 182; --cat-b: 212; }
+
+/* ── 페이지 오프셋 ────────────────────────────────────── */
+
+.__news-ticker-offset {
+  margin-top: var(--ticker-height) !important;
+}

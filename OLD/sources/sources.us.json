@@ -1,0 +1,713 @@
+{
+  "pack_id": "us",
+  "meta": {
+    "locale": "en-US",
+    "generated_at": "2026-01-08",
+    "policy": {
+      "trusted_channels_only": true,
+      "tone_filter_enabled": false
+    }
+  },
+  "category_labels": {
+    "world": "World",
+    "politics": "Politics",
+    "economy": "Economy/Business",
+    "society": "Society/Local",
+    "tech": "Tech/Science",
+    "culture": "Culture/Life",
+    "sports": "Sports"
+  },
+  "metro_category": "society",
+  "tabs": [
+    {
+      "id": "world",
+      "label": "World",
+      "categories": [
+        {
+          "id": "world",
+          "label": "World",
+          "sources": [
+            {
+              "source_id": "reuters",
+              "feed_key": "world"
+            },
+            {
+              "source_id": "nyt",
+              "feed_key": "world"
+            },
+            {
+              "source_id": "wapo",
+              "feed_key": "world"
+            },
+            {
+              "source_id": "cnn",
+              "feed_key": "world"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "politics",
+      "label": "Politics",
+      "categories": [
+        {
+          "id": "politics",
+          "label": "Politics",
+          "sources": [
+            {
+              "source_id": "reuters",
+              "feed_key": "politics"
+            },
+            {
+              "source_id": "nyt",
+              "feed_key": "politics"
+            },
+            {
+              "source_id": "wapo",
+              "feed_key": "politics"
+            },
+            {
+              "source_id": "cnn",
+              "feed_key": "politics"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "economy",
+      "label": "Economy/Business",
+      "categories": [
+        {
+          "id": "economy",
+          "label": "Economy/Business",
+          "sources": [
+            {
+              "source_id": "bloomberg",
+              "feed_key": "economy"
+            },
+            {
+              "source_id": "cnbc",
+              "feed_key": "economy"
+            },
+            {
+              "source_id": "wsj",
+              "feed_key": "economy"
+            },
+            {
+              "source_id": "ft",
+              "feed_key": "economy"
+            },
+            {
+              "source_id": "reuters",
+              "feed_key": "economy"
+            },
+            {
+              "source_id": "nyt",
+              "feed_key": "economy"
+            },
+            {
+              "source_id": "wapo",
+              "feed_key": "economy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "society",
+      "label": "Society/Local",
+      "categories": [
+        {
+          "id": "society",
+          "label": "Society/Local",
+          "sources": [
+            {
+              "source_id": "nyt",
+              "feed_key": "society"
+            },
+            {
+              "source_id": "wapo",
+              "feed_key": "society"
+            },
+            {
+              "source_id": "cnn",
+              "feed_key": "society"
+            },
+            {
+              "source_id": "usatoday",
+              "feed_key": "top"
+            },
+            {
+              "source_id": "nbc",
+              "feed_key": "top"
+            },
+            {
+              "source_id": "abc",
+              "feed_key": "top"
+            },
+            {
+              "source_id": "cbs",
+              "feed_key": "top"
+            },
+            {
+              "source_id": "ap",
+              "feed_key": "top"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tech",
+      "label": "Tech/Science",
+      "categories": [
+        {
+          "id": "tech",
+          "label": "Tech/Science",
+          "sources": [
+            {
+              "source_id": "reuters",
+              "feed_key": "tech"
+            },
+            {
+              "source_id": "nyt",
+              "feed_key": "tech"
+            },
+            {
+              "source_id": "wapo",
+              "feed_key": "tech"
+            },
+            {
+              "source_id": "cnn",
+              "feed_key": "tech"
+            },
+            {
+              "source_id": "cnbc",
+              "feed_key": "tech"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "culture",
+      "label": "Culture/Life",
+      "categories": [
+        {
+          "id": "culture",
+          "label": "Culture/Life",
+          "sources": [
+            {
+              "source_id": "reuters",
+              "feed_key": "culture"
+            },
+            {
+              "source_id": "nyt",
+              "feed_key": "culture"
+            },
+            {
+              "source_id": "wapo",
+              "feed_key": "culture"
+            },
+            {
+              "source_id": "cnn",
+              "feed_key": "culture"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sports",
+      "label": "Sports",
+      "categories": [
+        {
+          "id": "sports",
+          "label": "Sports",
+          "sources": [
+            {
+              "source_id": "reuters",
+              "feed_key": "sports"
+            },
+            {
+              "source_id": "nyt",
+              "feed_key": "sports"
+            },
+            {
+              "source_id": "wapo",
+              "feed_key": "sports"
+            },
+            {
+              "source_id": "cnn",
+              "feed_key": "sports"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "metros": [
+    {
+      "id": "la",
+      "label": "Los Angeles Times",
+      "sources": [
+        {
+          "source_id": "latimes",
+          "feed_key": "top"
+        }
+      ]
+    },
+    {
+      "id": "chi",
+      "label": "Chicago Tribune",
+      "sources": [
+        {
+          "source_id": "chicagotribune",
+          "feed_key": "top"
+        }
+      ]
+    },
+    {
+      "id": "bos",
+      "label": "The Boston Globe",
+      "sources": [
+        {
+          "source_id": "bostonglobe",
+          "feed_key": "top"
+        }
+      ]
+    },
+    {
+      "id": "sf",
+      "label": "San Francisco Chronicle",
+      "sources": [
+        {
+          "source_id": "sfchronicle",
+          "feed_key": "top"
+        }
+      ]
+    },
+    {
+      "id": "phi",
+      "label": "The Philadelphia Inquirer",
+      "sources": [
+        {
+          "source_id": "philly",
+          "feed_key": "top"
+        }
+      ]
+    },
+    {
+      "id": "sea",
+      "label": "The Seattle Times",
+      "sources": [
+        {
+          "source_id": "seattletimes",
+          "feed_key": "top"
+        }
+      ]
+    },
+    {
+      "id": "mia",
+      "label": "Miami Herald",
+      "sources": [
+        {
+          "source_id": "miamiherald",
+          "feed_key": "top"
+        }
+      ]
+    },
+    {
+      "id": "hou",
+      "label": "Houston Chronicle",
+      "sources": [
+        {
+          "source_id": "houstonchronicle",
+          "feed_key": "top"
+        }
+      ]
+    },
+    {
+      "id": "dal",
+      "label": "The Dallas Morning News",
+      "sources": [
+        {
+          "source_id": "dallasnews",
+          "feed_key": "top"
+        }
+      ]
+    },
+    {
+      "id": "msp",
+      "label": "Star Tribune (Minneapolis)",
+      "sources": [
+        {
+          "source_id": "startribune",
+          "feed_key": "top"
+        }
+      ]
+    }
+  ],
+  "default_metros": [
+    "la",
+    "chi",
+    "bos",
+    "sf",
+    "phi",
+    "sea",
+    "mia",
+    "hou",
+    "dal",
+    "msp"
+  ],
+  "sources": [
+    {
+      "id": "reuters",
+      "name_en": "Reuters",
+      "type": "wire",
+      "homepage": "https://www.reuters.com/",
+      "feeds": {
+        "top": "https://news.google.com/rss/search?q=site:reuters.com&hl=en-US&gl=US&ceid=US:en",
+        "world": "https://news.google.com/rss/search?q=site:reuters.com+world&hl=en-US&gl=US&ceid=US:en",
+        "politics": "https://news.google.com/rss/search?q=site:reuters.com+politics&hl=en-US&gl=US&ceid=US:en",
+        "economy": "https://news.google.com/rss/search?q=site:reuters.com+business&hl=en-US&gl=US&ceid=US:en",
+        "tech": "https://news.google.com/rss/search?q=site:reuters.com+technology&hl=en-US&gl=US&ceid=US:en",
+        "culture": "https://news.google.com/rss/search?q=site:reuters.com+entertainment&hl=en-US&gl=US&ceid=US:en",
+        "sports": "https://news.google.com/rss/search?q=site:reuters.com+sports&hl=en-US&gl=US&ceid=US:en"
+      }
+    },
+    {
+      "id": "ap",
+      "name_en": "Associated Press",
+      "type": "wire",
+      "homepage": "https://apnews.com/",
+      "feeds": {
+        "top": "https://news.google.com/rss/search?q=site:apnews.com&hl=en-US&gl=US&ceid=US:en"
+      }
+    },
+    {
+      "id": "bloomberg",
+      "name_en": "Bloomberg",
+      "type": "business",
+      "homepage": "https://www.bloomberg.com/",
+      "feeds": {
+        "economy": "https://news.google.com/rss/search?q=site:bloomberg.com&hl=en-US&gl=US&ceid=US:en"
+      }
+    },
+    {
+      "id": "cnbc",
+      "name_en": "CNBC",
+      "type": "business",
+      "homepage": "https://www.cnbc.com/",
+      "feeds": {
+        "economy": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+        "tech": "https://www.cnbc.com/id/19854910/device/rss/rss.html"
+      }
+    },
+    {
+      "id": "wsj",
+      "name_en": "The Wall Street Journal",
+      "type": "business",
+      "homepage": "https://www.wsj.com/",
+      "feeds": {
+        "economy": "https://feeds.a.dj.com/rss/RSSMarketsMain.xml"
+      }
+    },
+    {
+      "id": "ft",
+      "name_en": "Financial Times",
+      "type": "business",
+      "homepage": "https://www.ft.com/",
+      "feeds": {
+        "economy": "https://www.ft.com/markets?format=rss"
+      }
+    },
+    {
+      "id": "nyt",
+      "name_en": "The New York Times",
+      "type": "newspaper",
+      "homepage": "https://www.nytimes.com/",
+      "feeds": {
+        "top": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+        "world": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+        "politics": "https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml",
+        "economy": "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml",
+        "society": "https://rss.nytimes.com/services/xml/rss/nyt/US.xml",
+        "tech": "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+        "culture": "https://rss.nytimes.com/services/xml/rss/nyt/Arts.xml",
+        "sports": "https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml"
+      }
+    },
+    {
+      "id": "wapo",
+      "name_en": "The Washington Post",
+      "type": "newspaper",
+      "homepage": "https://www.washingtonpost.com/",
+      "feeds": {
+        "top": "https://feeds.washingtonpost.com/rss/national",
+        "world": "https://feeds.washingtonpost.com/rss/world",
+        "politics": "https://feeds.washingtonpost.com/rss/politics",
+        "economy": "https://feeds.washingtonpost.com/rss/business",
+        "society": "https://feeds.washingtonpost.com/rss/national",
+        "tech": "https://feeds.washingtonpost.com/rss/technology",
+        "culture": "https://feeds.washingtonpost.com/rss/entertainment",
+        "sports": "https://feeds.washingtonpost.com/rss/sports"
+      }
+    },
+    {
+      "id": "usatoday",
+      "name_en": "USA Today",
+      "type": "newspaper",
+      "homepage": "https://www.usatoday.com/",
+      "feeds": {
+        "top": "https://news.google.com/rss/search?q=site:usatoday.com&hl=en-US&gl=US&ceid=US:en"
+      }
+    },
+    {
+      "id": "cnn",
+      "name_en": "CNN",
+      "type": "broadcast_news",
+      "homepage": "https://www.cnn.com/",
+      "feeds": {
+        "top": "https://rss.cnn.com/rss/edition.rss",
+        "world": "https://rss.cnn.com/rss/edition_world.rss",
+        "politics": "https://rss.cnn.com/rss/edition_politics.rss",
+        "economy": "https://rss.cnn.com/rss/edition_business.rss",
+        "society": "https://rss.cnn.com/rss/edition_us.rss",
+        "tech": "https://rss.cnn.com/rss/edition_technology.rss",
+        "culture": "https://rss.cnn.com/rss/edition_entertainment.rss",
+        "sports": "https://rss.cnn.com/rss/edition_sport.rss"
+      }
+    },
+    {
+      "id": "nbc",
+      "name_en": "NBC News",
+      "type": "broadcast_news",
+      "homepage": "https://www.nbcnews.com/",
+      "feeds": {
+        "top": "https://feeds.nbcnews.com/nbcnews/public/news"
+      }
+    },
+    {
+      "id": "abc",
+      "name_en": "ABC News",
+      "type": "broadcast_news",
+      "homepage": "https://abcnews.go.com/",
+      "feeds": {
+        "top": "https://abcnews.go.com/abcnews/topstories"
+      }
+    },
+    {
+      "id": "cbs",
+      "name_en": "CBS News",
+      "type": "broadcast_news",
+      "homepage": "https://www.cbsnews.com/",
+      "feeds": {
+        "top": "https://www.cbsnews.com/latest/rss/main"
+      }
+    },
+    {
+      "id": "latimes",
+      "name_en": "Los Angeles Times",
+      "type": "metro_newspaper",
+      "homepage": "https://www.latimes.com/",
+      "feeds": {
+        "top": "https://www.latimes.com/rss2.0.xml"
+      }
+    },
+    {
+      "id": "chicagotribune",
+      "name_en": "Chicago Tribune",
+      "type": "metro_newspaper",
+      "homepage": "https://www.chicagotribune.com/",
+      "feeds": {
+        "top": "https://www.chicagotribune.com/news/feed/"
+      }
+    },
+    {
+      "id": "bostonglobe",
+      "name_en": "The Boston Globe",
+      "type": "metro_newspaper",
+      "homepage": "https://www.bostonglobe.com/",
+      "feeds": {
+        "top": "https://news.google.com/rss/search?q=site:bostonglobe.com&hl=en-US&gl=US&ceid=US:en"
+      }
+    },
+    {
+      "id": "sfchronicle",
+      "name_en": "San Francisco Chronicle",
+      "type": "metro_newspaper",
+      "homepage": "https://www.sfchronicle.com/",
+      "feeds": {
+        "top": "https://news.google.com/rss/search?q=site:sfchronicle.com&hl=en-US&gl=US&ceid=US:en"
+      }
+    },
+    {
+      "id": "philly",
+      "name_en": "The Philadelphia Inquirer",
+      "type": "metro_newspaper",
+      "homepage": "https://www.inquirer.com/",
+      "feeds": {
+        "top": "https://news.google.com/rss/search?q=site:inquirer.com&hl=en-US&gl=US&ceid=US:en"
+      }
+    },
+    {
+      "id": "seattletimes",
+      "name_en": "The Seattle Times",
+      "type": "metro_newspaper",
+      "homepage": "https://www.seattletimes.com/",
+      "feeds": {
+        "top": "https://news.google.com/rss/search?q=site:seattletimes.com&hl=en-US&gl=US&ceid=US:en"
+      }
+    },
+    {
+      "id": "miamiherald",
+      "name_en": "Miami Herald",
+      "type": "metro_newspaper",
+      "homepage": "https://www.miamiherald.com/",
+      "feeds": {
+        "top": "https://news.google.com/rss/search?q=site:miamiherald.com&hl=en-US&gl=US&ceid=US:en"
+      }
+    },
+    {
+      "id": "houstonchronicle",
+      "name_en": "Houston Chronicle",
+      "type": "metro_newspaper",
+      "homepage": "https://www.houstonchronicle.com/",
+      "feeds": {
+        "top": "https://news.google.com/rss/search?q=site:houstonchronicle.com&hl=en-US&gl=US&ceid=US:en"
+      }
+    },
+    {
+      "id": "dallasnews",
+      "name_en": "The Dallas Morning News",
+      "type": "metro_newspaper",
+      "homepage": "https://www.dallasnews.com/",
+      "feeds": {
+        "top": "https://news.google.com/rss/search?q=site:dallasnews.com&hl=en-US&gl=US&ceid=US:en"
+      }
+    },
+    {
+      "id": "startribune",
+      "name_en": "Star Tribune",
+      "type": "metro_newspaper",
+      "homepage": "https://www.startribune.com/",
+      "feeds": {
+        "top": "https://www.startribune.com/rss"
+      }
+    }
+  ],
+  "ui": {
+    "appName": "US News Ticker",
+    "brand": "US NEWS",
+    "loading": "Loading headlines…",
+    "scoreTitle": "Score View (test)",
+    "scoreHint": "Click {brand} → sort by score (max {max})",
+    "close": "Close",
+    "empty": "No articles to show.",
+    "breakingTag": "[Breaking]",
+    "breakingLabel": "Breaking",
+    "sectionCountry": "Country",
+    "sectionTickerPosition": "Ticker Position",
+    "toggleDockBottom": "Dock to bottom",
+    "toggleHideOnScroll": "Hide on scroll",
+    "sectionHiddenSites": "Hidden sites",
+    "hideSite": "Hide this site",
+    "unhideSite": "Unhide this site",
+    "unhideButton": "Unhide",
+    "refresh": "Refresh",
+    "devSection": "DEV",
+    "devLogs": "Debug logs",
+    "reloadSources": "Reload sources",
+    "devHint": "Sources pack changes apply without clearing storage.",
+    "sourcesHint": "Replace <code>sources/sources.&lt;pack&gt;.json</code> to add locales.",
+    "noHiddenSites": "None",
+    "metroSection": "US Metro",
+    "metroEnabled": "Enable metro",
+    "statusLastUpdated": "Last updated: {time}",
+    "statusCurrentHost": "Current: {host}",
+    "metroToggle": "Toggle list"
+  },
+  "stopwords": [
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "but",
+    "if",
+    "then",
+    "than",
+    "this",
+    "that",
+    "these",
+    "those",
+    "is",
+    "are",
+    "was",
+    "were",
+    "be",
+    "been",
+    "being",
+    "of",
+    "to",
+    "in",
+    "for",
+    "on",
+    "at",
+    "from",
+    "by",
+    "with",
+    "as",
+    "about",
+    "into",
+    "over",
+    "after",
+    "before",
+    "between",
+    "under",
+    "around",
+    "against",
+    "not",
+    "no",
+    "new",
+    "news",
+    "report",
+    "reports",
+    "says",
+    "said",
+    "say",
+    "according",
+    "official",
+    "officials",
+    "statement",
+    "update",
+    "live",
+    "latest",
+    "breaking",
+    "urgent",
+    "will",
+    "would",
+    "could",
+    "should",
+    "may",
+    "might",
+    "its",
+    "it's",
+    "their",
+    "them",
+    "they",
+    "we",
+    "our",
+    "you",
+    "your",
+    "he",
+    "she",
+    "his",
+    "her",
+    "them",
+    "us"
+  ]
+}

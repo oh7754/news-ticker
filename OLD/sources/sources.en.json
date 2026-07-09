@@ -1,0 +1,263 @@
+{
+  "pack_id": "en",
+  "meta": {
+    "locale": "en-US",
+    "generated_at": "2025-01-01",
+    "policy": {
+      "trusted_channels_only": true,
+      "tone_filter_enabled": false
+    }
+  },
+  "tabs": [
+    {
+      "id": "world",
+      "label": "World",
+      "categories": [
+        {
+          "id": "world",
+          "label": "World",
+          "sources": [
+            {
+              "source_id": "bbc",
+              "feed_key": "world"
+            },
+            {
+              "source_id": "nyt",
+              "feed_key": "world"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "politics",
+      "label": "Politics",
+      "categories": [
+        {
+          "id": "politics",
+          "label": "Politics",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "id": "economy",
+      "label": "Economy/Business",
+      "categories": [
+        {
+          "id": "economy",
+          "label": "Economy/Business",
+          "sources": [
+            {
+              "source_id": "bbc",
+              "feed_key": "business"
+            },
+            {
+              "source_id": "nyt",
+              "feed_key": "business"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "society",
+      "label": "Society/Local",
+      "categories": [
+        {
+          "id": "society",
+          "label": "Society/Local",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "id": "tech",
+      "label": "Tech/Science",
+      "categories": [
+        {
+          "id": "tech",
+          "label": "Tech/Science",
+          "sources": [
+            {
+              "source_id": "bbc",
+              "feed_key": "tech"
+            },
+            {
+              "source_id": "nyt",
+              "feed_key": "tech"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "culture",
+      "label": "Culture/Life",
+      "categories": [
+        {
+          "id": "culture",
+          "label": "Culture/Life",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "id": "sports",
+      "label": "Sports",
+      "categories": [
+        {
+          "id": "sports",
+          "label": "Sports",
+          "sources": []
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "bbc",
+      "name_en": "BBC News",
+      "type": "broadcast_news",
+      "homepage": "https://www.bbc.com/news",
+      "feeds": {
+        "top": "https://feeds.bbci.co.uk/news/rss.xml",
+        "world": "https://feeds.bbci.co.uk/news/world/rss.xml",
+        "business": "https://feeds.bbci.co.uk/news/business/rss.xml",
+        "tech": "https://feeds.bbci.co.uk/news/technology/rss.xml"
+      }
+    },
+    {
+      "id": "nyt",
+      "name_en": "The New York Times",
+      "type": "newspaper",
+      "homepage": "https://www.nytimes.com/",
+      "feeds": {
+        "home": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+        "world": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+        "business": "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml",
+        "tech": "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml"
+      }
+    }
+  ],
+  "ui": {
+    "appName": "News Ticker",
+    "brand": "EN NEWS",
+    "loading": "Loading headlines…",
+    "scoreTitle": "Score View (test)",
+    "scoreHint": "Click {brand} → sort by score (max {max})",
+    "close": "Close",
+    "empty": "No articles to show.",
+    "breakingTag": "[Breaking]",
+    "breakingLabel": "Breaking",
+    "sectionCountry": "Country",
+    "sectionTickerPosition": "Ticker Position",
+    "toggleDockBottom": "Dock to bottom",
+    "toggleHideOnScroll": "Hide on scroll",
+    "sectionHiddenSites": "Hidden sites",
+    "hideSite": "Hide this site",
+    "unhideSite": "Unhide this site",
+    "unhideButton": "Unhide",
+    "refresh": "Refresh",
+    "devSection": "DEV",
+    "devLogs": "Debug logs",
+    "reloadSources": "Reload sources",
+    "devHint": "Sources pack changes apply without clearing storage.",
+    "sourcesHint": "Replace <code>sources/sources.&lt;pack&gt;.json</code> to add locales.",
+    "noHiddenSites": "None",
+    "metroSection": "US Metro",
+    "metroEnabled": "Enable metro",
+    "statusLastUpdated": "Last updated: {time}",
+    "statusCurrentHost": "Current: {host}",
+    "metroToggle": "Toggle list"
+  },
+  "stopwords": [
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "but",
+    "if",
+    "then",
+    "than",
+    "this",
+    "that",
+    "these",
+    "those",
+    "is",
+    "are",
+    "was",
+    "were",
+    "be",
+    "been",
+    "being",
+    "of",
+    "to",
+    "in",
+    "for",
+    "on",
+    "at",
+    "from",
+    "by",
+    "with",
+    "as",
+    "about",
+    "into",
+    "over",
+    "after",
+    "before",
+    "between",
+    "under",
+    "around",
+    "against",
+    "not",
+    "no",
+    "new",
+    "news",
+    "report",
+    "reports",
+    "says",
+    "said",
+    "say",
+    "according",
+    "official",
+    "officials",
+    "statement",
+    "update",
+    "live",
+    "latest",
+    "breaking",
+    "urgent",
+    "will",
+    "would",
+    "could",
+    "should",
+    "may",
+    "might",
+    "its",
+    "it's",
+    "their",
+    "them",
+    "they",
+    "we",
+    "our",
+    "you",
+    "your",
+    "he",
+    "she",
+    "his",
+    "her",
+    "them",
+    "us"
+  ],
+  "category_labels": {
+    "politics": "Politics",
+    "economy": "Economy/Business",
+    "society": "Society/Local",
+    "world": "World",
+    "tech": "Tech/Science",
+    "culture": "Culture/Life",
+    "sports": "Sports"
+  }
+}

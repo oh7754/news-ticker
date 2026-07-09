@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>News Ticker 설정</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px;
+      background: #1a1a1a;
+      color: #eee;
+    }
+    header {
+      background: #e00;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    header h1 { font-size: 15px; color: #fff; font-weight: 700; }
+    header span { font-size: 18px; }
+    
+    .section { padding: 14px; border-bottom: 1px solid #2a2a2a; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #888;
+      margin-bottom: 10px;
+    }
+
+    /* 토글 스위치 */
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .toggle-label { color: #ddd; }
+    .switch { position: relative; width: 36px; height: 20px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; inset: 0;
+      background: #444; border-radius: 20px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 14px; height: 14px;
+      left: 3px; top: 3px;
+      background: #fff; border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    input:checked + .slider { background: #e00; }
+    input:checked + .slider::before { transform: translateX(16px); }
+
+    /* 팩 선택 */
+    select#pack-select {
+      width: 100%;
+      background: #222; border: 1px solid #333;
+      border-radius: 6px; padding: 8px;
+      color: #eee; font-size: 13px;
+      outline: none;
+    }
+    select#pack-select:focus { border-color: #e00; }
+
+    button.btn {
+      background: #e00; border: none; border-radius: 6px;
+      color: #fff; cursor: pointer; font-size: 12px;
+      padding: 6px 10px; font-weight: 600;
+      transition: background 0.15s;
+    }
+    button.btn:hover { background: #c00; }
+    button.btn.secondary {
+      background: #333;
+    }
+    button.btn.secondary:hover { background: #444; }
+
+    .status {
+      font-size: 11px; color: #666; margin-top: 6px;
+      min-height: 16px;
+    }
+    .status.ok { color: #4caf50; }
+    .status.err { color: #e00; }
+
+    footer {
+      padding: 10px 14px;
+      display: flex; gap: 6px;
+    }
+    footer button.btn { flex: 1; }
+  </style>
+</head>
+<body>
+  <header>
+    <span>📡</span>
+    <h1>News Ticker</h1>
+  </header>
+
+  <div class="section">
+    <div class="section-title">디스플레이</div>
+    <div class="toggle-row">
+      <span class="toggle-label">티커 표시</span>
+      <label class="switch">
+        <input type="checkbox" id="toggle-visible" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">뉴스 팩</div>
+    <select id="pack-select">
+      <option value="kr">🇰🇷 한국</option>
+      <option value="us">🇺🇸 미국</option>
+      <option value="en">🌐 영어 (BBC)</option>
+      <option value="jp">🇯🇵 일본</option>
+    </select>
+    <div class="status" id="status"></div>
+  </div>
+
+  <footer>
+    <button class="btn secondary" id="btn-refresh">↺ 지금 새로고침</button>
+    <button class="btn" id="btn-save">저장</button>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
