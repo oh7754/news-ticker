@@ -91,6 +91,15 @@
   will-change: transform;
 }
 
+/* 탭이 백그라운드로 가면 JS가 이 클래스를 붙여서 애니메이션을 멈춘다.
+   CSS 애니메이션은 탭이 안 보여도 실제 경과 시간 기준으로 내부 시계가
+   계속 흘러서, 오래 있다 돌아오면 그동안 밀린 걸 한 번에 따라잡으며
+   순식간에 확 지나가 버리는 문제가 있었음 — 아예 멈춰두면 그 문제 자체가
+   사라진다. */
+#__news-ticker-inner.is-paused {
+  animation-play-state: paused;
+}
+
 #__news-ticker-controls {
   flex-shrink: 0;
   display: flex;

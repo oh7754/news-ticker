@@ -203,8 +203,33 @@
     renderSlice();
   }
 
+  // background.js가 이미 그룹(4개 단위: top 1 + mid 2 + tail 1)까지 섞어서
+  // 저장해두지만, 그건 10분 갱신 주기마다 한 번씩만 섞이는 거라 같은 주기
+  // 안에서는 모든 탭이 똑같은 순서를 봄. renderOffset도 buildTicker가 호출될
+  // 때마다(=페이지 로드마다) 0으로 리셋되니까, 그룹 "내부"만 섞으면 매번
+  // 처음 60개(그룹 내부 순서만 다른, 같은 기사들)만 보게 되는 문제가 있다.
+  // 그래서 그룹 "순서" 자체도 같이 섞어야 페이지를 옮겨다닐 때마다 실제로
+  // 다른 기사들이 보인다 — 그룹 구성(어떤 기사 4개가 묶였는지)만 유지.
+  function shuffleClient(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function reshuffleGroups(items) {
+    const groups = [];
+    for (let i = 0; i < items.length; i += 4) {
+      groups.push(items.slice(i, i + 4));
+    }
+    shuffleClient(groups); // 그룹 순서 자체를 섞음 — 매번 다른 60개가 먼저 보이게
+    groups.forEach((g) => shuffleClient(g)); // 그룹 내부 순서도 섞음
+    return groups.flat();
+  }
+
   function buildTicker(items) {
-    allHeadlines = items;
+    allHeadlines = reshuffleGroups(items);
     renderOffset = 0;
     const match = findClusterMatch();
     if (match) {
@@ -250,12 +275,24 @@
     chrome.storage.local.set({ tickerHidden: false });
   }
 
+  // ── 탭 백그라운드 대응 ──────────────────────────────────
+  // CSS 애니메이션은 탭이 안 보여도 실제 경과 시간 기준으로 내부 시계가
+  // 계속 흐른다. 그래서 다른 탭에 오래 있다 돌아오면 그 시간만큼 밀린 걸
+  // 한 번에 따라잡으면서 순식간에 확 지나가 버린다(루프 교체 이벤트도
+  // 밀린 만큼 몰아서 발생). 탭이 안 보이는 동안은 아예 애니메이션을
+  // 멈춰서 이 문제를 원천 차단한다.
+  document.addEventListener("visibilitychange", () => {
+    inner.classList.toggle("is-paused", document.hidden);
+  });
+
   // ── 마운트 ────────────────────────────────────────────
   function mount() {
     // 숨김 상태 복원 (플로팅 카드는 오버레이라 페이지 레이아웃을 밀어낼 필요 없음)
     chrome.storage.local.get({ tickerHidden: false }, ({ tickerHidden }) => {
       if (tickerHidden) root.classList.add("ticker-hidden");
     });
+
+    if (document.hidden) inner.classList.add("is-paused");
 
     document.documentElement.insertBefore(root, document.documentElement.firstChild);
     loadHeadlines();
