@@ -70,6 +70,13 @@
       cluster.textContent = `+${article.cluster - 1}`;
       source.appendChild(cluster);
     }
+
+    if (article.signal === "breaking") {
+      const dot = document.createElement("span");
+      dot.className = "ticker-dot";
+      source.appendChild(dot);
+    }
+
     item.appendChild(source);
 
     if (article.cat) {
@@ -81,12 +88,6 @@
 
     const articleEl = document.createElement("span");
     articleEl.className = "ticker-article";
-
-    if (article.signal === "breaking") {
-      const dot = document.createElement("span");
-      dot.className = "ticker-dot";
-      articleEl.appendChild(dot);
-    }
 
     const title = document.createElement("span");
     title.className = "ticker-title";
